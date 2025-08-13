@@ -1,0 +1,103 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" width="400" height="300">
+  <defs>
+    <!-- Gradients for depth -->
+    <linearGradient id="brainGrad1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#A8C8B8;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#7A9F8A;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="brainGrad2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#9BC0AA;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#6D8F7D;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="brainGrad3" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#B5D0C5;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#8AAF9A;stop-opacity:1" />
+    </linearGradient>
+    
+    <!-- Golden glow filter -->
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
+      <feMerge> 
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  
+  <!-- Brain outline (simplified low-poly style) -->
+  <g transform="translate(50, 30)">
+    <!-- Main brain mass -->
+    <polygon points="80,50 120,30 160,40 190,60 220,80 240,110 250,140 240,170 220,190 180,200 140,195 100,185 70,160 60,130 65,100" 
+             fill="url(#brainGrad1)" stroke="#5A7A6A" stroke-width="1"/>
+    
+    <!-- Brain segments -->
+    <polygon points="120,30 160,40 170,70 150,85 130,75 110,60" 
+             fill="url(#brainGrad2)" stroke="#5A7A6A" stroke-width="1"/>
+    
+    <polygon points="160,40 190,60 200,90 180,105 160,95 150,75" 
+             fill="url(#brainGrad3)" stroke="#5A7A6A" stroke-width="1"/>
+    
+    <polygon points="190,60 220,80 230,110 210,125 190,115 180,95" 
+             fill="url(#brainGrad1)" stroke="#5A7A6A" stroke-width="1"/>
+    
+    <polygon points="220,80 240,110 245,140 225,155 205,145 195,125" 
+             fill="url(#brainGrad2)" stroke="#5A7A6A" stroke-width="1"/>
+    
+    <polygon points="100,185 140,195 160,180 150,160 130,155 110,165" 
+             fill="url(#brainGrad3)" stroke="#5A7A6A" stroke-width="1"/>
+    
+    <polygon points="70,160 100,170 120,155 110,135 90,130 75,145" 
+             fill="url(#brainGrad1)" stroke="#5A7A6A" stroke-width="1"/>
+    
+    <!-- Lower brain regions -->
+    <polygon points="180,200 220,190 235,170 215,155 195,160 175,180" 
+             fill="url(#brainGrad2)" stroke="#5A7A6A" stroke-width="1"/>
+    
+    <!-- Brain stem -->
+    <polygon points="160,200 170,220 180,235 175,245 165,245 155,235 150,220" 
+             fill="url(#brainGrad3)" stroke="#5A7A6A" stroke-width="1"/>
+  </g>
+  
+  <!-- Neural network connections (golden lines) -->
+  <g stroke="#D4AF37" stroke-width="2" fill="none" filter="url(#glow)">
+    <!-- Main connection lines -->
+    <line x1="130" y1="90" x2="170" y2="110" opacity="0.8"/>
+    <line x1="170" y1="110" x2="210" y2="130" opacity="0.8"/>
+    <line x1="210" y1="130" x2="240" y2="160" opacity="0.8"/>
+    <line x1="150" y1="140" x2="190" y2="160" opacity="0.8"/>
+    <line x1="120" y1="160" x2="160" y2="180" opacity="0.8"/>
+    <line x1="160" y1="180" x2="200" y2="200" opacity="0.8"/>
+    
+    <!-- Cross connections -->
+    <line x1="140" y1="100" x2="180" y2="140" opacity="0.6"/>
+    <line x1="180" y1="120" x2="220" y2="160" opacity="0.6"/>
+    <line x1="160" y1="150" x2="200" y2="180" opacity="0.6"/>
+    <line x1="130" y1="170" x2="170" y2="190" opacity="0.6"/>
+    
+    <!-- Vertical connections -->
+    <line x1="160" y1="100" x2="160" y2="140" opacity="0.7"/>
+    <line x1="190" y1="120" x2="190" y2="160" opacity="0.7"/>
+    <line x1="140" y1="140" x2="140" y2="180" opacity="0.7"/>
+  </g>
+  
+  <!-- Neural nodes (golden dots) -->
+  <g fill="#D4AF37" filter="url(#glow)">
+    <circle cx="130" cy="90" r="3" opacity="0.9"/>
+    <circle cx="170" cy="110" r="3" opacity="0.9"/>
+    <circle cx="210" cy="130" r="3" opacity="0.9"/>
+    <circle cx="240" cy="160" r="3" opacity="0.9"/>
+    <circle cx="150" cy="140" r="3" opacity="0.9"/>
+    <circle cx="190" cy="160" r="3" opacity="0.9"/>
+    <circle cx="120" cy="160" r="3" opacity="0.9"/>
+    <circle cx="160" cy="180" r="3" opacity="0.9"/>
+    <circle cx="200" cy="200" r="3" opacity="0.9"/>
+    
+    <!-- Additional nodes -->
+    <circle cx="140" cy="100" r="2" opacity="0.7"/>
+    <circle cx="180" cy="140" r="2" opacity="0.7"/>
+    <circle cx="220" cy="160" r="2" opacity="0.7"/>
+    <circle cx="160" cy="150" r="2" opacity="0.7"/>
+    <circle cx="130" cy="170" r="2" opacity="0.7"/>
+    <circle cx="170" cy="190" r="2" opacity="0.7"/>
+  </g>
+</svg>

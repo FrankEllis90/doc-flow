@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Enhanced Chunker Test - Debug Tool</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        h1 {
+            color: #333;
+            border-bottom: 2px solid #4CAF50;
+            padding-bottom: 10px;
+        }
+        .test-section {
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .controls {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .control-group {
+            display: flex;
+            flex-direction: column;
+        }
+        label {
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #555;
+        }
+        input, textarea, select {
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        textarea {
+            min-height: 150px;
+            resize: vertical;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 5px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        button.danger {
+            background-color: #f44336;
+        }
+        button.danger:hover {
+            background-color: #da190b;
+        }
+        .chunk-result {
+            background: #f9f9f9;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            padding: 15px;
+            margin: 10px 0;
+        }
+        .chunk-header {
+            font-weight: bold;
+            color: #2196F3;
+            margin-bottom: 10px;
+        }
+        .chunk-content {
+            background: white;
+            padding: 10px;
+            border-left: 3px solid #2196F3;
+            margin: 10px 0;
+            font-family: monospace;
+            font-size: 13px;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+        .chunk-metadata {
+            color: #666;
+            font-size: 12px;
+            margin-top: 10px;
+        }
+        .status {
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+            font-weight: bold;
+        }
+        .status.success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .status.error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .status.warning {
+            background-color: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeeba;
+        }
+        .debug-info {
+            background: #e3f2fd;
+            border: 1px solid #90caf9;
+            border-radius: 4px;
+            padding: 15px;
+            margin: 20px 0;
+        }
+        .debug-info h3 {
+            color: #1565c0;
+            margin-top: 0;
+        }
+        .debug-info pre {
+            background: white;
+            padding: 10px;
+            border-radius: 4px;
+            overflow-x: auto;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔍 Enhanced Chunker Test - Debug Tool</h1>
+    
+    <div class="test-section">
+        <h2>Test Configuration</h2>
+        <div class="controls">
+            <div class="control-group" style="grid-column: 1 / 3;">
+                <label for="testContent">Test Content:</label>
+                <textarea id="testContent" placeholder="Enter your test content here...">This is a real test content for chunking. It contains multiple sentences and should create proper chunks with actual content, not placeholder text. This test will verify that the chunking algorithm works correctly and produces meaningful output.
+
+Second paragraph with more content to ensure we have enough text for multiple chunks. This paragraph discusses various topics and contains information that should be preserved during the chunking process.
+
+Third paragraph concludes our test with additional content to make sure we have a substantial amount of text for testing purposes.</textarea>
+            </div>
+            <div class="control-group">
+                <label for="chunkSize">Chunk Size (words):</label>
+                <input type="number" id="chunkSize" value="50" min="10" max="1000">
+            </div>
+            <div class="control-group">
+                <label for="overlap">Overlap (words):</label>
+                <input type="number" id="overlap" value="10" min="0" max="100">
+            </div>
+            <div class="control-group">
+                <label for="chunkBy">Chunk By:</label>
+                <select id="chunkBy">
+                    <option value="words">Words</option>
+                    <option value="characters">Characters</option>
+                </select>
+            </div>
+            <div class="control-group">
+                <label for="fileName">File Name:</label>
+                <input type="text" id="fileName" value="test-content.txt">
+            </div>
+        </div>
+        <div style="text-align: center;">
+            <button onclick="runTest()">🚀 Run Chunker Test</button>
+            <button onclick="clearResults()" class="danger">🗑️ Clear Results</button>
+            <button onclick="testWithSampleData()">📝 Test with Sample Data</button>
+            <button onclick="testWithPlaceholder()">⚠️ Test with Placeholder</button>
+        </div>
+    </div>
+    
+    <div id="status"></div>
+    
+    <div id="debugInfo" class="debug-info" style="display: none;">
+        <h3>Debug Information</h3>
+        <pre id="debugContent"></pre>
+    </div>
+    
+    <div id="results" class="test-section" style="display: none;">
+        <h2>Test Results</h2>
+        <div id="summary"></div>
+        <div id="chunks"></div>
+    </div>
+    
+    <script type="module">
+        import { chunkText } from './src/utils/chunker.js';
+        
+        window.runTest = function() {
+            const content = document.getElementById('testContent').value;
+            const chunkSize = parseInt(document.getElementById('chunkSize').value);
+            const overlap = parseInt(document.getElementById('overlap').value);
+            const chunkBy = document.getElementById('chunkBy').value;
+            const fileName = document.getElementById('fileName').value;
+            
+            if (!content.trim()) {
+                showStatus('Please enter some content to test', 'error');
+                return;
+            }
+            
+            console.log('=== ENHANCED CHUNKER TEST ===');
+            console.log('Input:', {
+                contentLength: content.length,
+                chunkSize,
+                overlap,
+                chunkBy,
+                fileName
+            });
+            
+            try {
+                const startTime = performance.now();
+                
+                const chunks = chunkText(content, fileName, {
+                    chunkSize,
+                    overlap,
+                    chunkBy
+                });
+                
+                const endTime = performance.now();
+                const processingTime = (endTime - startTime).toFixed(2);
+                
+                console.log('Output chunks:', chunks);
+                
+                // Check for placeholder content
+                const hasPlaceholders = chunks.some(chunk => 
+                    chunk.content.includes('This is chunk content') ||
+                    chunk.content.includes('placeholder') ||
+                    chunk.content.includes('sample content')
+                );
+                
+                // Display debug info
+                const debugInfo = {
+                    inputContent: content.substring(0, 200) + '...',
+                    inputLength: content.length,
+                    inputWords: content.split(/\s+/).length,
+                    options: { chunkSize, overlap, chunkBy },
+                    outputChunks: chunks.length,
+                    processingTime: processingTime + 'ms',
+                    hasPlaceholders: hasPlaceholders,
+                    firstChunk: chunks[0] ? {
+                        id: chunks[0].chunk_id,
+                        content: chunks[0].content.substring(0, 100) + '...',
+                        wordCount: chunks[0].metadata.wordCount
+                    } : null
+                };
+                
+                document.getElementById('debugInfo').style.display = 'block';
+                document.getElementById('debugContent').textContent = JSON.stringify(debugInfo, null, 2);
+                
+                // Display results
+                displayResults(chunks, hasPlaceholders, processingTime);
+                
+                if (hasPlaceholders) {
+                    showStatus('❌ WARNING: Placeholder content detected in chunks!', 'error');
+                } else {
+                    showStatus('✅ Success: Chunker is working correctly - no placeholder content found', 'success');
+                }
+                
+            } catch (error) {
+                console.error('Test failed:', error);
+                showStatus('❌ Error: ' + error.message, 'error');
+            }
+        };
+        
+        window.clearResults = function() {
+            document.getElementById('results').style.display = 'none';
+            document.getElementById('debugInfo').style.display = 'none';
+            document.getElementById('status').innerHTML = '';
+            document.getElementById('chunks').innerHTML = '';
+        };
+        
+        window.testWithSampleData = function() {
+            const sampleContent = `# Introduction to Machine Learning
+
+Machine learning is a subset of artificial intelligence that enables systems to learn and improve from experience without being explicitly programmed. It focuses on developing computer programs that can access data and use it to learn for themselves.
+
+## Types of Machine Learning
+
+There are three main types of machine learning:
+
+1. **Supervised Learning**: The algorithm learns from labeled training data, helping to predict outcomes for unforeseen data. Common algorithms include linear regression, decision trees, and neural networks.
+
+2. **Unsupervised Learning**: The algorithm learns from unlabeled data and finds hidden patterns or intrinsic structures in input data. Examples include clustering and association algorithms.
+
+3. **Reinforcement Learning**: The algorithm learns through interaction with an environment, using feedback from its own actions and experiences. This is commonly used in robotics, gaming, and navigation.
+
+## Applications
+
+Machine learning has numerous practical applications including:
+- Image and speech recognition
+- Medical diagnosis
+- Financial market analysis
+- Recommendation systems
+- Autonomous vehicles`;
+            
+            document.getElementById('testContent').value = sampleContent;
+            runTest();
+        };
+        
+        window.testWithPlaceholder = function() {
+            document.getElementById('testContent').value = 'This is chunk content placeholder text for testing';
+            runTest();
+        };
+        
+        function displayResults(chunks, hasPlaceholders, processingTime) {
+            const resultsDiv = document.getElementById('results');
+            const summaryDiv = document.getElementById('summary');
+            const chunksDiv = document.getElementById('chunks');
+            
+            resultsDiv.style.display = 'block';
+            
+            // Summary
+            summaryDiv.innerHTML = `
+                <div class="status ${hasPlaceholders ? 'warning' : 'success'}">
+                    <strong>Summary:</strong><br>
+                    - Total Chunks Created: ${chunks.length}<br>
+                    - Processing Time: ${processingTime}ms<br>
+                    - Placeholder Content: ${hasPlaceholders ? 'YES ⚠️' : 'NO ✅'}<br>
+                    - Average Words per Chunk: ${Math.round(chunks.reduce((sum, c) => sum + c.metadata.wordCount, 0) / chunks.length)}
+                </div>
+            `;
+            
+            // Individual chunks
+            chunksDiv.innerHTML = '';
+            chunks.forEach((chunk, index) => {
+                const isPlaceholder = chunk.content.includes('placeholder') || 
+                                    chunk.content.includes('This is chunk content');
+                
+                const chunkDiv = document.createElement('div');
+                chunkDiv.className = 'chunk-result';
+                chunkDiv.innerHTML = `
+                    <div class="chunk-header">
+                        Chunk ${index + 1} (ID: ${chunk.chunk_id}) ${isPlaceholder ? '⚠️ PLACEHOLDER' : ''}
+                    </div>
+                    <div class="chunk-content">${chunk.content}</div>
+                    <div class="chunk-metadata">
+                        Words: ${chunk.metadata.wordCount} | 
+                        Position: ${chunk.metadata.position} | 
+                        Length: ${chunk.metadata.length} |
+                        Source: ${chunk.source}
+                    </div>
+                `;
+                chunksDiv.appendChild(chunkDiv);
+            });
+        }
+        
+        function showStatus(message, type) {
+            const statusDiv = document.getElementById('status');
+            statusDiv.innerHTML = `<div class="status ${type}">${message}</div>`;
+        }
+        
+        // Auto-run test on load with default content
+        window.addEventListener('load', () => {
+            console.log('Enhanced Chunker Test Tool Loaded');
+            // Optionally run test automatically
+            // runTest();
+        });
+    </script>
+</body>
+</html>

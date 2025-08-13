@@ -1,0 +1,323 @@
+/* Import design system first */
+@import './styles/design-system.css';
+
+/* Import Tailwind layers */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* World-Class Mobile-First Responsive Utilities */
+@layer utilities {
+  /* Touch Optimizations */
+  .touch-manipulation {
+    touch-action: manipulation;
+  }
+  
+  .tap-highlight-transparent {
+    -webkit-tap-highlight-color: transparent;
+  }
+  
+  .scroll-smooth {
+    scroll-behavior: smooth;
+  }
+  
+  /* Container Queries Support */
+  .container-sm {
+    container-type: inline-size;
+    container-name: small;
+  }
+  
+  .container-md {
+    container-type: inline-size;
+    container-name: medium;
+  }
+  
+  .container-lg {
+    container-type: inline-size;
+    container-name: large;
+  }
+  
+  /* Responsive Typography */
+  .responsive-text {
+    font-size: var(--fluid-text-base);
+    line-height: var(--line-height-normal);
+  }
+  
+  .responsive-heading {
+    font-size: var(--fluid-text-2xl);
+    line-height: var(--line-height-tight);
+  }
+  
+  /* Safe Area Support for Mobile Devices */
+  .safe-area-inset-top {
+    padding-top: env(safe-area-inset-top);
+  }
+  
+  .safe-area-inset-bottom {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  
+  .safe-area-inset-left {
+    padding-left: env(safe-area-inset-left);
+  }
+  
+  .safe-area-inset-right {
+    padding-right: env(safe-area-inset-right);
+  }
+  
+  /* Mobile-First Breakpoint Utilities */
+  .mobile-only {
+    @media (min-width: 641px) {
+      display: none !important;
+    }
+  }
+  
+  .tablet-up {
+    display: none;
+    @media (min-width: 641px) {
+      display: block;
+    }
+  }
+  
+  .desktop-up {
+    display: none;
+    @media (min-width: 1025px) {
+      display: block;
+    }
+  }
+  
+  /* Flexible Layouts */
+  .flex-mobile-column {
+    @apply flex flex-col;
+  }
+
+  @media (min-width: 768px) {
+    .flex-mobile-column {
+      @apply flex-row;
+    }
+  }
+  
+  .grid-responsive {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+    
+    @media (min-width: 640px) {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1.5rem;
+    }
+    
+    @media (min-width: 1024px) {
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2rem;
+    }
+  }
+  
+  /* Responsive Spacing */
+  .spacing-responsive {
+    padding: 1rem;
+    @media (min-width: 640px) {
+      padding: 1.5rem;
+    }
+    @media (min-width: 1024px) {
+      padding: 2rem;
+    }
+  }
+}
+
+/* Base styles are now handled in design-system.css */
+/* Additional app-specific overrides can go here */
+
+@layer components {
+  /* Legacy component classes for backward compatibility */
+  /* Main components are now in design-system.css */
+  
+  .input-field {
+    @apply form-input;
+  }
+  
+  .textarea-field {
+    @apply form-textarea;
+  }
+  
+  /* Select dropdown styles */
+  select {
+    @apply form-select;
+  }
+  
+  select option {
+    @apply bg-white text-neutral-900 py-2;
+  }
+  
+  select option:hover,
+  select option:focus,
+  select option:checked {
+    @apply bg-primary-600 text-white;
+  }
+  
+  /* Better dropdown styling for all browsers */
+  select:focus option:checked {
+    @apply bg-primary-600 text-white;
+  }
+  
+  /* Legacy card styles - migrated to design system */
+  .card-base {
+    @apply card card-body;
+  }
+  
+  .section-header {
+    @apply text-2xl font-bold mb-4 text-neutral-900;
+  }
+  
+  .form-section {
+    @apply bg-neutral-50 border border-neutral-200 p-4 rounded-lg;
+  }
+  
+  /* App-specific component styles */
+  .step-indicator {
+    @apply w-12 h-12 rounded-full flex items-center justify-center text-sm font-semibold
+           border-2 transition-all duration-300 ease-in-out;
+  }
+  
+  .step-indicator-inactive {
+    @apply step-indicator border-neutral-300 bg-white text-neutral-500;
+  }
+  
+  .step-indicator-active {
+    @apply step-indicator border-primary-600 bg-primary-600 text-white shadow-focus-primary;
+  }
+  
+  .step-indicator-completed {
+    @apply step-indicator border-success-600 bg-success-600 text-white;
+  }
+  
+  .step-line {
+    @apply h-0.5 bg-neutral-300 transition-all duration-300;
+  }
+  
+  .step-line-completed {
+    @apply step-line bg-success-600;
+  }
+  
+  /* Enhanced chunk and content cards */
+  .chunk-card {
+    @apply card card-body border-l-4 border-l-primary-200 hover:border-l-primary-400
+           transition-all duration-200 ease-in-out hover:shadow-md;
+  }
+  
+  .content-card {
+    @apply card card-body hover:shadow-md transition-all duration-200 ease-in-out;
+  }
+  
+  /* Tag system */
+  .tag-pill {
+    @apply badge badge-primary;
+  }
+  
+  .tag-pill-secondary {
+    @apply badge badge-secondary;
+  }
+  
+  /* Progress bars */
+  .progress-sage {
+    @apply bg-primary-600;
+  }
+  
+  /* File upload zone */
+  .drag-zone {
+    @apply border-2 border-dashed border-neutral-300 rounded-xl p-8 text-center
+           transition-all duration-300 ease-in-out hover:border-primary-400
+           focus-within:border-primary-500 focus-within:bg-primary-50;
+  }
+  
+  .drag-zone-active {
+    @apply border-primary-500 bg-primary-50 text-primary-700;
+  }
+  
+  /* Mobile responsiveness helpers */
+  .mobile-stack {
+    @apply flex flex-col gap-4;
+  }
+  
+  .mobile-full {
+    @apply w-full;
+  }
+
+  .mobile-center {
+    @apply text-center;
+  }
+
+  /* Enhanced Responsive Card Grid */
+  .card-grid {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: 1fr;
+    
+    @media (min-width: 640px) {
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1.5rem;
+    }
+    
+    @media (min-width: 1024px) {
+      gap: 2rem;
+    }
+  }
+  
+  /* Enhanced focus styles for better accessibility */
+  .focus-outline:focus {
+    outline: var(--focus-ring-width) solid var(--focus-ring-primary);
+    outline-offset: var(--focus-ring-offset);
+  }
+
+  .focus-outline:focus-visible {
+    outline: var(--focus-ring-width) solid var(--focus-ring-primary);
+    outline-offset: var(--focus-ring-offset);
+    box-shadow: 0 0 0 calc(var(--focus-ring-width) + var(--focus-ring-offset)) 
+                rgba(33, 150, 243, 0.2);
+  }
+  
+  /* High contrast mode support moved outside @layer */
+  
+  /* Reduced motion support moved outside @layer */
+}
+
+/* Media queries with @apply directives moved outside @layer */
+@media (min-width: 768px) {
+  .mobile-stack {
+    @apply flex-row;
+  }
+  
+  .mobile-full {
+    @apply w-auto;
+  }
+
+  .mobile-center {
+    @apply text-left;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .chunk-card,
+  .content-card,
+  .card {
+    @apply border-2;
+  }
+  
+  .btn-primary,
+  .btn-secondary,
+  .btn-destructive {
+    @apply border-2 border-neutral-900;
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .step-indicator,
+  .step-line,
+  .chunk-card,
+  .content-card,
+  .drag-zone {
+    @apply transition-none;
+  }
+}

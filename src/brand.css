@@ -1,0 +1,316 @@
+/* MoneyMeans Branding - Legacy Support */
+/* These colors map to the new design tokens in design-tokens.css */
+
+:root {
+  /* Legacy brand color mappings - use design tokens instead */
+  --brand-sage: var(--color-primary-500);
+  --brand-sage-dark: var(--color-primary-600);
+  --brand-sage-light: var(--color-primary-100);
+  --brand-gold: var(--color-accent-500);
+  --brand-gold-soft: var(--color-accent-300);
+  
+  /* Legacy neutral mappings */
+  --neutral-bg: var(--bg-secondary);
+  --neutral-text: var(--text-primary);
+  --neutral-muted: var(--text-tertiary);
+  
+  /* Legacy semantic color mappings */
+  --success-bg: var(--color-success-100);
+  --success-text: var(--color-success-700);
+  --warning-bg: var(--color-warning-100);
+  --warning-text: var(--color-warning-700);
+  --error-bg: var(--color-error-100);
+  --error-text: var(--color-error-700);
+}
+
+/* Legacy Peppercorn Color Mappings to MoneyMeans */
+.text-peppercorn-deep-green { color: var(--neutral-text) !important; }
+.text-peppercorn-deep-green-75 { color: var(--neutral-muted) !important; }
+.text-peppercorn-living-green { color: var(--brand-sage) !important; }
+
+.bg-peppercorn-living-green { background-color: var(--brand-sage) !important; }
+.bg-peppercorn-living-green-5 { background-color: var(--brand-sage-light) !important; }
+.bg-peppercorn-deep-green-5 { background-color: var(--brand-sage-light) !important; }
+.bg-peppercorn-orange { background-color: var(--brand-gold) !important; }
+
+.border-peppercorn-living-green { border-color: var(--brand-sage) !important; }
+.border-peppercorn-deep-green-25 { border-color: var(--brand-sage-light) !important; }
+.border-peppercorn-living-green-25 { border-color: var(--brand-sage-light) !important; }
+
+.hover\:text-peppercorn-deep-green:hover { color: var(--neutral-text) !important; }
+.hover\:bg-peppercorn-living-green-5:hover { background-color: var(--brand-sage-light) !important; }
+
+/* Global Background - managed by design system */
+body {
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
+}
+
+/* Remove global text override - use design tokens instead */
+/* Legacy text classes still available for gradual migration */
+
+.accent {
+  color: var(--color-accent-500) !important;
+}
+
+/* Step Navigation - migrated to design tokens in index.css */
+/* These are legacy styles - use .step class from design tokens instead */
+
+/* Chunking Method Selector - migrated to design tokens in index.css */
+/* These are legacy styles - use .chunk-method class from design tokens instead */
+
+/* AI Readiness Cards - migrated to design tokens in index.css */
+/* Use .insights-card and .card classes from design tokens instead */
+
+/* Chunk Cards - migrated to design tokens in index.css */
+/* Use .chunk-card, .chunk-number, .chunk-source, .chunk-stats classes from design tokens instead */
+
+/* Tag Pills - migrated to design tokens in index.css */
+/* Use .tag-pill class from design tokens instead */
+
+/* Custom Sage Green Classes */
+.bg-sage {
+  background-color: var(--brand-sage) !important;
+}
+
+.bg-sage-light {
+  background-color: var(--brand-sage-light) !important;
+}
+
+.bg-sage-dark {
+  background-color: var(--brand-sage-dark) !important;
+}
+
+.text-sage {
+  color: var(--brand-sage) !important;
+}
+
+.text-sage-dark {
+  color: var(--brand-sage-dark) !important;
+}
+
+.border-sage {
+  border-color: var(--brand-sage) !important;
+}
+
+.border-sage-light {
+  border-color: var(--brand-sage-light) !important;
+}
+
+/* Custom Gold Classes */
+.bg-gold {
+  background-color: var(--brand-gold) !important;
+}
+
+.bg-gold-soft {
+  background-color: var(--brand-gold-soft) !important;
+}
+
+.text-gold {
+  color: var(--brand-gold) !important;
+}
+
+.text-gold-soft {
+  color: var(--brand-gold-soft) !important;
+}
+
+.border-gold {
+  border-color: var(--brand-gold) !important;
+}
+
+/* Hover States */
+.hover-sage:hover {
+  background-color: var(--brand-sage) !important;
+}
+
+.hover-sage-dark:hover {
+  background-color: var(--brand-sage-dark) !important;
+}
+
+.hover-gold:hover {
+  background-color: var(--brand-gold) !important;
+}
+
+/* Modern Button Styles - migrated to design tokens in components.css */
+/* Use .btn-primary and .btn-secondary classes from design tokens instead */
+
+/* Card Styles */
+.card-sage {
+  background: linear-gradient(135deg, var(--neutral-bg) 0%, var(--brand-sage-light) 100%);
+  border: 1px solid var(--brand-sage-light);
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(168, 183, 157, 0.1);
+}
+
+/* Tag Styles */
+.tag-sage {
+  background-color: var(--brand-sage-light);
+  color: var(--brand-sage-dark);
+  border: 1px solid var(--brand-sage);
+}
+
+.tag-gold {
+  background-color: var(--brand-gold-soft);
+  color: var(--brand-gold);
+  border: 1px solid var(--brand-gold);
+}
+
+/* Progress Bar */
+.progress-sage {
+  background-color: var(--brand-sage);
+}
+
+/* Notification Styles */
+.notification-success {
+  background-color: var(--success-bg);
+  color: var(--success-text);
+  border-left: 4px solid var(--brand-sage);
+}
+
+.notification-warning {
+  background-color: var(--warning-bg);
+  color: var(--warning-text);
+  border-left: 4px solid var(--brand-gold);
+}
+
+.notification-error {
+  background-color: var(--error-bg);
+  color: var(--error-text);
+  border-left: 4px solid #C53030;
+}
+
+/* Logo Styles */
+.logo {
+  max-height: 48px;
+  width: auto;
+}
+
+.logo-large {
+  max-height: 64px;
+  width: auto;
+}
+
+/* Soft shadows and rounded corners */
+.soft-shadow {
+  box-shadow: 0 4px 16px rgba(168, 183, 157, 0.15);
+}
+
+.rounded-brand {
+  border-radius: 12px;
+}
+
+/* Drag and Drop Styles */
+.drag-zone {
+  background: linear-gradient(135deg, var(--neutral-bg) 0%, var(--brand-sage-light) 100%);
+  border: 2px dashed var(--brand-sage);
+  border-radius: 12px;
+  transition: all 0.3s ease;
+}
+
+.drag-zone:hover {
+  background: linear-gradient(135deg, var(--brand-sage-light) 0%, #CDD6C2 100%);
+  border-color: var(--brand-sage-dark);
+  transform: scale(1.02);
+}
+
+.drag-zone.active {
+  background: linear-gradient(135deg, var(--brand-sage-light) 0%, var(--brand-sage) 100%);
+  border-color: var(--brand-sage-dark);
+  transform: scale(1.05);
+  box-shadow: 0 8px 24px rgba(168, 183, 157, 0.3);
+}
+
+/* Step Indicators */
+.step-complete {
+  background-color: var(--brand-sage);
+  color: white;
+}
+
+.step-current {
+  background-color: var(--brand-gold);
+  color: white;
+}
+
+.step-pending {
+  background-color: var(--neutral-muted);
+  color: white;
+}
+
+/* Quality Score Colors */
+.score-excellent {
+  color: var(--brand-sage-dark);
+}
+
+.score-good {
+  color: var(--brand-gold);
+}
+
+.score-needs-work {
+  color: #C53030;
+}
+
+/* Export Panel Enhancements */
+.export-format-card {
+  border: 2px solid #E0E4DD;
+  padding: 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  background: white;
+}
+
+.export-format-card:hover {
+  border-color: #C7A047;
+  transform: translateY(-2px);
+}
+
+.export-format-card.selected {
+  border: 2px solid #C7A047;
+  box-shadow: 0 0 6px rgba(199, 160, 71, 0.2);
+  background-color: #FAF9F5;
+}
+
+.export-options {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+}
+
+.export-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.upload-script-btn {
+  background: transparent;
+  border: 1px solid #C7A047;
+  color: #C7A047;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.upload-script-btn:hover {
+  background: #FDF8ED;
+  transform: none;
+}
+
+/* Mobile Responsive Export Panel */
+@media (max-width: 768px) {
+  .export-options {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  
+  .export-buttons {
+    flex-direction: column;
+    margin-top: 12px;
+  }
+  
+  .export-format-grid {
+    grid-template-columns: 1fr;
+  }
+}

@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Chunker</title>
+</head>
+<body>
+    <h1>Chunker Test</h1>
+    <div id="output"></div>
+    
+    <script type="module">
+        // Test the chunker directly
+        import { chunkText } from './src/utils/chunker.js';
+        
+        const testContent = `This is a real test content for chunking. It contains multiple sentences and should create proper chunks with actual content, not placeholder text. This test will verify that the chunking algorithm works correctly and produces meaningful output.
+
+Second paragraph with more content to ensure we have enough text for multiple chunks. This paragraph discusses various topics and contains information that should be preserved during the chunking process.
+
+Third paragraph concludes our test with additional content to make sure we have a substantial amount of text for testing purposes.`;
+        
+        console.log('=== CHUNKER TEST ===');
+        console.log('Input text:', testContent);
+        
+        const chunks = chunkText(testContent, 'test-content.txt', {
+            chunkSize: 50, // Small chunks for testing
+            overlap: 10,
+            chunkBy: 'words'
+        });
+        
+        console.log('Output chunks:', chunks);
+        console.log('Number of chunks:', chunks.length);
+        
+        const output = document.getElementById('output');
+        
+        chunks.forEach((chunk, index) => {
+            const div = document.createElement('div');
+            div.innerHTML = `
+                <h3>Chunk ${index + 1} (ID: ${chunk.chunk_id})</h3>
+                <p><strong>Content:</strong> "${chunk.content}"</p>
+                <p><strong>Word Count:</strong> ${chunk.metadata.wordCount}</p>
+                <hr>
+            `;
+            output.appendChild(div);
+        });
+        
+        // Also test if any chunk has placeholder content
+        const hasPlaceholders = chunks.some(chunk => 
+            chunk.content.includes('This is chunk content') ||
+            chunk.content.includes('placeholder') ||
+            chunk.content.includes('sample content')
+        );
+        
+        console.log('Has placeholder content:', hasPlaceholders);
+        
+        if (!hasPlaceholders) {
+            console.log('✅ Chunker is working correctly - no placeholder content found');
+        } else {
+            console.log('❌ Chunker has placeholder content - this indicates an issue');
+        }
+    </script>
+</body>
+</html>

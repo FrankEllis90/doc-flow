@@ -1,0 +1,2642 @@
+<template>
+  <div class="markdown-import min-h-screen p-4 sm:p-6 bg-neutral-25">
+    <!-- Welcome Section -->
+    <div class="max-w-6xl mx-auto">
+      <div class="text-center mb-8 px-4">
+        <div class="mb-4">
+          <h1 class="text-3xl sm:text-4xl lg:text-5xl font-bold text-neutral-900 text-balance">
+            AI Document Processor
+          </h1>
+        </div>
+        <p class="text-lg sm:text-xl max-w-4xl mx-auto text-neutral-700 text-pretty">
+          Transform your documents into AI-ready chunks for vector databases and language models. 
+          No technical knowledge required!
+        </p>
+      </div>
+
+      <!-- Progress Steps - Improved 5-step flow -->
+      <div class="flex justify-center mb-8 px-4">
+        <div class="flex items-center space-x-2 sm:space-x-4 overflow-x-auto pb-2 scrollbar-thin">
+          <!-- Step 1: Upload -->
+          <div class="flex flex-col items-center flex-shrink-0">
+            <div 
+              :class="[
+                'step-indicator transition-all duration-300',
+                step >= 1 
+                  ? (step === 1 ? 'step-indicator-active' : 'step-indicator-completed') 
+                  : 'step-indicator-inactive'
+              ]"
+            >
+              <i v-if="step > 1" class="fas fa-check text-sm"></i>
+              <span v-else>1</span>
+            </div>
+            <span class="mt-2 text-xs sm:text-sm font-medium text-neutral-700 whitespace-nowrap">Upload</span>
+          </div>
+          <div class="step-line w-4 sm:w-8" :class="{ 'step-line-completed': step >= 2 }"></div>
+          
+          <!-- Step 2: Configure -->
+          <div class="flex flex-col items-center flex-shrink-0">
+            <div 
+              :class="[
+                'step-indicator transition-all duration-300',
+                step >= 2 
+                  ? (step === 2 ? 'step-indicator-active' : 'step-indicator-completed') 
+                  : 'step-indicator-inactive'
+              ]"
+            >
+              <i v-if="step > 2" class="fas fa-check text-sm"></i>
+              <span v-else>2</span>
+            </div>
+            <span class="mt-2 text-xs sm:text-sm font-medium text-neutral-700 whitespace-nowrap">Configure</span>
+          </div>
+          <div class="step-line w-4 sm:w-8" :class="{ 'step-line-completed': step >= 3 }"></div>
+          
+          <!-- Step 3: Process -->
+          <div class="flex flex-col items-center flex-shrink-0">
+            <div 
+              :class="[
+                'step-indicator transition-all duration-300',
+                step >= 3 
+                  ? (step === 3 ? 'step-indicator-active' : 'step-indicator-completed') 
+                  : 'step-indicator-inactive'
+              ]"
+            >
+              <i v-if="step > 3" class="fas fa-check text-sm"></i>
+              <span v-else>3</span>
+            </div>
+            <span class="mt-2 text-xs sm:text-sm font-medium text-neutral-700 whitespace-nowrap">Process</span>
+          </div>
+          <div class="step-line w-4 sm:w-8" :class="{ 'step-line-completed': step >= 4 }"></div>
+          
+          <!-- Step 4: Review -->
+          <div class="flex flex-col items-center flex-shrink-0">
+            <div 
+              :class="[
+                'step-indicator transition-all duration-300',
+                step >= 4 
+                  ? (step === 4 ? 'step-indicator-active' : 'step-indicator-completed') 
+                  : 'step-indicator-inactive'
+              ]"
+            >
+              <i v-if="step > 4" class="fas fa-check text-sm"></i>
+              <span v-else>4</span>
+            </div>
+            <span class="mt-2 text-xs sm:text-sm font-medium text-neutral-700 whitespace-nowrap">Review</span>
+          </div>
+          <div class="step-line w-4 sm:w-8" :class="{ 'step-line-completed': step >= 5 }"></div>
+          
+          <!-- Step 5: Export -->
+          <div class="flex flex-col items-center flex-shrink-0">
+            <div 
+              :class="[
+                'step-indicator transition-all duration-300',
+                step >= 5 
+                  ? (step === 5 ? 'step-indicator-active' : 'step-indicator-completed') 
+                  : 'step-indicator-inactive'
+              ]"
+            >
+              <i v-if="step > 5" class="fas fa-check text-sm"></i>
+              <span v-else>5</span>
+            </div>
+            <span class="mt-2 text-xs sm:text-sm font-medium text-neutral-700 whitespace-nowrap">Export</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Chunking Guide -->
+      <ChunkingGuide />
+
+      <!-- Step 1: File Upload -->
+      <AccordionSection
+        title="Upload Your Documents"
+        description="Drag & drop files or click to browse. Supports .md, .markdown, and .pdf files"
+        :step-number="1"
+        :status="uploadedFiles.length > 0 ? 'completed' : (step >= 1 ? 'active' : 'inactive')"
+        :status-text="uploadedFiles.length > 0 ? `${uploadedFiles.length} files uploaded` : ''"
+        :status-icon="uploadedFiles.length > 0 ? 'fas fa-check' : ''"
+        :expanded="step === 1 || (uploadedFiles.length === 0 && step <= 2)"
+        no-padding
+      >
+        <div class="p-6">
+          <!-- File Upload -->
+          <div 
+            class="drag-zone transition-all duration-300"
+            :class="{
+              'drag-zone-active': dragActive,
+              'opacity-50 cursor-not-allowed': processing
+            }"
+            @drop="handleDrop"
+            @dragover="handleDragOver"
+            @dragenter="handleDragEnter"
+            @dragleave="handleDragLeave"
+          >
+            <!-- Upload Icon -->
+            <div class="mb-6">
+              <div v-if="processing" class="loading-spinner w-16 h-16 mx-auto text-primary-600"></div>
+              <i 
+                v-else
+                class="text-6xl transition-all duration-300"
+                :class="{
+                  'fas fa-cloud-upload-alt text-primary-600': !dragActive,
+                  'fas fa-download text-primary-700 animate-bounce': dragActive
+                }"
+              ></i>
+            </div>
+            
+            <!-- Hidden File Input -->
+            <input 
+              ref="fileInput"
+              type="file" 
+              accept=".md,.markdown,.pdf" 
+              @change="handleFileUpload"
+              class="sr-only"
+              multiple
+              :disabled="processing"
+              aria-describedby="file-upload-description"
+            />
+            
+            <!-- Upload Button -->
+            <button 
+              @click="$refs.fileInput.click()"
+              :disabled="processing"
+              class="btn btn-primary btn-lg mb-4"
+            >
+              <i class="fas fa-file-alt mr-2"></i>
+              {{ processing ? 'Processing...' : 'Choose Documents' }}
+            </button>
+            
+            <!-- Upload Status Text -->
+            <div class="space-y-2">
+              <p class="text-lg font-medium" :class="{
+                'text-primary-700': dragActive,
+                'text-neutral-600': processing,
+                'text-neutral-700': !dragActive && !processing
+              }">
+                <span v-if="dragActive">Drop files here to upload!</span>
+                <span v-else-if="processing">Processing files...</span>
+                <span v-else>Drag & drop files here or click to browse</span>
+              </p>
+              
+              <p id="file-upload-description" class="text-sm text-neutral-600">
+                Supports .md, .markdown, and .pdf files • Maximum 50MB per file • Up to 20 files
+              </p>
+            </div>
+          </div>
+        </div>
+      </AccordionSection>
+
+      <!-- File Queue Section -->
+      <AccordionSection
+        v-if="fileQueue.length > 0"
+        title="File Queue"
+        :description="`${fileQueue.length} files ready for processing`"
+        :summary="`${completedFiles.length}/${fileQueue.length} completed`"
+        :status="completedFiles.length === fileQueue.length && fileQueue.length > 0 ? 'completed' : (hasProcessingFiles ? 'active' : 'inactive')"
+        :status-text="`${overallProgress}% complete`"
+        :status-icon="completedFiles.length === fileQueue.length && fileQueue.length > 0 ? 'fas fa-check' : ''"
+        :expanded="hasProcessingFiles || completedFiles.length < fileQueue.length"
+      >
+        <!-- Processing Overview -->
+        <div v-if="hasProcessingFiles || completedFiles.length > 0" class="card-primary mb-6">
+          <div class="card-body">
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 space-y-2 sm:space-y-0">
+              <h3 class="text-lg font-semibold text-neutral-900">Processing Progress</h3>
+              <span class="text-sm font-medium text-neutral-600">{{ overallProgress }}% Complete</span>
+            </div>
+          
+            <div class="progress mb-4">
+              <div 
+                class="progress-bar" 
+                :style="{ width: overallProgress + '%' }"
+                role="progressbar"
+                :aria-valuenow="overallProgress"
+                aria-valuemin="0"
+                aria-valuemax="100"
+              ></div>
+            </div>
+          
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+              <div class="bg-white rounded-lg p-3 border border-neutral-200">
+                <div class="text-2xl font-bold text-neutral-600">{{ queuedFiles.length }}</div>
+                <div class="text-sm text-neutral-500">Queued</div>
+              </div>
+              <div class="bg-white rounded-lg p-3 border border-neutral-200">
+                <div class="text-2xl font-bold text-warning-600">{{ processingFiles.length }}</div>
+                <div class="text-sm text-neutral-500">Processing</div>
+              </div>
+              <div class="bg-white rounded-lg p-3 border border-neutral-200">
+                <div class="text-2xl font-bold text-success-600">{{ completedFiles.length }}</div>
+                <div class="text-sm text-neutral-500">Completed</div>
+              </div>
+              <div class="bg-white rounded-lg p-3 border border-neutral-200">
+                <div class="text-2xl font-bold text-error-600">{{ failedFiles.length }}</div>
+                <div class="text-sm text-neutral-500">Failed</div>
+              </div>
+            </div>
+          
+            <!-- Time Estimates -->
+            <div v-if="processingStats.estimatedTimeRemaining" class="mt-4 text-center">
+              <div class="bg-white rounded-lg p-3 border border-neutral-200 inline-block">
+                <div class="text-sm text-neutral-600">
+                  <i class="fas fa-clock mr-2 text-neutral-400"></i>
+                  Estimated time remaining: 
+                  <span class="font-medium text-neutral-900">{{ Math.ceil(processingStats.estimatedTimeRemaining) }} minutes</span>
+                  <span v-if="processingStats.processingRate > 0" class="text-neutral-500">
+                    ({{ processingStats.processingRate.toFixed(1) }} files/min)
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- File Queue List -->
+        <div class="card">
+          <div class="card-header">
+            <h3 class="text-lg font-semibold text-neutral-900">
+              File Queue ({{ fileQueue.length }})
+            </h3>
+          </div>
+          <div class="card-body max-h-80 overflow-y-auto scrollbar-thin">
+          
+            <div class="space-y-3">
+              <div v-for="queueFile in fileQueue" :key="queueFile.id" 
+                   class="flex items-center justify-between p-4 bg-neutral-25 rounded-lg border-l-4 transition-all hover:bg-neutral-50"
+                   :class="{
+                     'border-l-neutral-300': queueFile.status === 'queued',
+                     'border-l-warning-500': queueFile.status === 'processing',
+                     'border-l-success-500': queueFile.status === 'completed',
+                     'border-l-error-500': queueFile.status === 'failed'
+                   }">
+            
+                <div class="flex items-center space-x-3 flex-1">
+                  <!-- File Icon -->
+                  <div class="flex-shrink-0">
+                    <i v-if="queueFile.type === 'application/pdf'" class="fas fa-file-pdf text-error-600 text-xl"></i>
+                    <i v-else class="fas fa-file-alt text-primary-600 text-xl"></i>
+                  </div>
+              
+                  <!-- File Info -->
+                  <div class="flex-1 min-w-0">
+                    <div class="flex items-center space-x-2 mb-2">
+                      <span class="font-medium truncate text-neutral-900">{{ queueFile.name }}</span>
+                      <span class="badge flex-shrink-0"
+                            :class="{
+                              'badge-secondary': queueFile.status === 'queued',
+                              'badge-warning': queueFile.status === 'processing',
+                              'badge-success': queueFile.status === 'completed',
+                              'badge-error': queueFile.status === 'failed'
+                            }">
+                        {{ queueFile.status.toUpperCase() }}
+                      </span>
+                    </div>
+                
+                    <div class="flex items-center space-x-4">
+                      <span class="text-sm text-neutral-600">{{ formatFileSize(queueFile.size) }}</span>
+                      
+                      <!-- Processing Progress -->
+                      <div v-if="queueFile.status === 'processing'" class="flex-1 max-w-32">
+                        <div class="progress progress-warning">
+                          <div class="progress-bar" :style="{ width: queueFile.progress + '%' }"></div>
+                        </div>
+                      </div>
+                      
+                      <!-- Processing Time -->
+                      <span v-if="queueFile.processingTime > 0" class="text-xs text-neutral-500 flex items-center">
+                        <i class="fas fa-clock mr-1"></i>
+                        {{ (queueFile.processingTime / 1000).toFixed(1) }}s
+                      </span>
+                      
+                      <!-- Chunks Generated -->
+                      <span v-if="queueFile.chunks.length > 0" class="text-xs text-neutral-500 flex items-center">
+                        <i class="fas fa-th-large mr-1"></i>
+                        {{ queueFile.chunks.length }} chunks
+                      </span>
+                    </div>
+                  </div>
+                </div>
+                
+                <!-- Action Button -->
+                <div class="flex-shrink-0">
+                  <button 
+                    v-if="queueFile.status === 'failed'"
+                    @click="retryFile(queueFile)"
+                    class="btn btn-sm btn-outline text-error-600 border-error-600 hover:bg-error-50"
+                  >
+                    <i class="fas fa-redo mr-2"></i>Retry
+                  </button>
+                  <button 
+                    v-else-if="queueFile.status === 'completed'"
+                    @click="viewChunks(queueFile)"
+                    class="btn btn-sm btn-success"
+                  >
+                    <i class="fas fa-eye mr-2"></i>View
+                  </button>
+                  <button 
+                    v-else
+                    @click="removeFromQueue(queueFile.id)"
+                    class="btn btn-sm btn-ghost text-neutral-600"
+                  >
+                    <i class="fas fa-times mr-2"></i>Remove
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </AccordionSection>
+
+      <!-- Step 2: Processing & Analysis Hub -->
+      <AccordionSection
+        v-if="uploadedFiles.length > 0 && step >= 2"
+        title="Processing & Analysis Hub"
+        description="Configure processing, monitor progress, and view insights"
+        :step-number="2"
+        :status="step >= 3 ? 'completed' : (step >= 2 ? 'active' : 'inactive')"
+        :summary="getProcessingSummary()"
+        :expanded="step === 2 || hasProcessingFiles || completedFiles.length > 0"
+      >
+        <!-- Processing Tabs Navigation -->
+        <div class="processing-hub">
+          <nav class="flex space-x-1 bg-neutral-100 p-1 rounded-lg mb-6" role="tablist">
+            <button 
+              v-for="tab in processingTabs" 
+              :key="tab.id"
+              :class="[
+                'processing-tab flex items-center px-4 py-2 text-sm font-medium rounded-md transition-all',
+                activeProcessingTab === tab.id 
+                  ? 'bg-white text-primary-700 shadow-sm border border-primary-200' 
+                  : 'text-neutral-600 hover:text-neutral-900 hover:bg-white/50'
+              ]"
+              @click="switchProcessingTab(tab.id)"
+              :aria-selected="activeProcessingTab === tab.id"
+              role="tab"
+            >
+              <i :class="tab.icon" class="w-4 h-4 mr-2"></i>
+              {{ tab.label }}
+              <span v-if="getTabBadge(tab.id)" class="ml-2 bg-primary-600 text-white text-xs px-2 py-1 rounded-full">
+                {{ getTabBadge(tab.id) }}
+              </span>
+            </button>
+          </nav>
+          
+          <!-- Tab Content Container -->
+          <div class="tab-content" role="tabpanel">
+            
+            <!-- Configure Tab -->
+            <div v-if="activeProcessingTab === 'configure'" class="configure-tab">
+              <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <div>
+                  <label class="form-label mb-4">
+                    Chunking Method
+                    <span class="badge badge-primary ml-2">Important</span>
+                  </label>
+              <div class="flex flex-col sm:flex-row sm:space-x-6 space-y-3 sm:space-y-0">
+                <label class="cursor-pointer flex items-start space-x-3">
+                  <input 
+                    v-model="chunkingOptions.chunkBy" 
+                    type="radio" 
+                    value="words" 
+                    class="form-radio mt-1"
+                  />
+                  <div>
+                    <div class="font-semibold text-neutral-900">By Words</div>
+                    <p class="text-sm text-neutral-600">Recommended for most content. Splits every X words.</p>
+                  </div>
+                </label>
+                <label class="cursor-pointer flex items-start space-x-3">
+                  <input 
+                    v-model="chunkingOptions.chunkBy" 
+                    type="radio" 
+                    value="characters" 
+                    class="form-radio mt-1"
+                  />
+                  <div>
+                    <div class="font-semibold text-neutral-900">By Characters</div>
+                    <p class="text-sm text-neutral-600">Precise control over chunk size using character count.</p>
+                  </div>
+                </label>
+                <label class="cursor-pointer flex items-start space-x-3">
+                  <input 
+                    v-model="chunkingOptions.chunkBy" 
+                    type="radio" 
+                    value="sections" 
+                    class="form-radio mt-1"
+                  />
+                  <div>
+                    <div class="font-semibold text-neutral-900">By Sections</div>
+                    <p class="text-sm text-neutral-600">Preserves document structure using headers.</p>
+                  </div>
+                </label>
+              </div>
+              <p class="text-xs mt-3 text-neutral-500 bg-neutral-50 p-2 rounded">{{ getChunkingDescription() }}</p>
+            </div>
+            <div v-if="chunkingOptions.chunkBy !== 'sections'" class="space-y-4">
+              <div>
+                <label class="form-label" :title="'Optimal size for most AI applications'">
+                  Chunk Size
+                  <span class="badge badge-outline-primary ml-2">{{ getOptimalRange() }}</span>
+                </label>
+                <input 
+                  v-model.number="chunkingOptions.chunkSize" 
+                  type="range"
+                  :min="chunkingOptions.chunkBy === 'words' ? 200 : 800"
+                  :max="chunkingOptions.chunkBy === 'words' ? 1000 : 4000"
+                  class="w-full mb-2 accent-primary-600 custom-range-slider"
+                  :style="{ '--slider-progress': chunkSizeProgress + '%' }"
+                  @input="updateSliderProgress"
+                />
+                <div class="flex justify-between text-sm text-neutral-600">
+                  <span>Small ({{ chunkingOptions.chunkBy === 'words' ? '200' : '800' }})</span>
+                  <span class="font-semibold text-primary-600 bg-primary-50 px-2 py-1 rounded">{{ chunkingOptions.chunkSize }}</span>
+                  <span>Large ({{ chunkingOptions.chunkBy === 'words' ? '1000' : '4000' }})</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        
+          <div v-if="chunkingOptions.chunkBy !== 'sections'" class="mt-6">
+            <label class="form-label" :title="'This helps prevent content loss across splits'">
+              Overlap {{ Math.round((chunkingOptions.overlap / chunkingOptions.chunkSize) * 100) }}%
+              <span class="badge badge-primary ml-2">Prevents info loss</span>
+            </label>
+            <input 
+              v-model.number="chunkingOptions.overlap" 
+              type="range"
+              min="0" 
+              :max="Math.floor(chunkingOptions.chunkSize * 0.3)"
+              class="w-full mb-2 accent-primary-600 custom-range-slider"
+              :style="{ '--slider-progress': overlapProgress + '%' }"
+              @input="updateSliderProgress"
+            />
+            <div class="flex justify-between text-sm text-neutral-600">
+              <span>None (0)</span>
+              <span class="font-semibold text-primary-600 bg-primary-50 px-2 py-1 rounded">{{ chunkingOptions.overlap }}</span>
+              <span>Max ({{ Math.floor(chunkingOptions.chunkSize * 0.3) }})</span>
+            </div>
+          </div>
+        
+          <div class="card-primary mt-6">
+            <div class="card-body">
+              <div class="flex flex-col lg:flex-row lg:items-center justify-between space-y-4 lg:space-y-0">
+                <div class="flex items-start space-x-3">
+                  <input 
+                    v-model="chunkingOptions.autoTag" 
+                    type="checkbox" 
+                    id="autoTag"
+                    class="form-checkbox mt-1"
+                  />
+                  <div>
+                    <label for="autoTag" class="text-sm font-medium text-neutral-900 cursor-pointer">
+                      Auto-suggest tags (Highly recommended)
+                    </label>
+                    <p class="text-xs text-neutral-600 mt-1">
+                      <span class="badge badge-success">Improves AI accuracy</span>
+                    </p>
+                  </div>
+                </div>
+                <div class="flex flex-col space-y-3 w-full lg:w-auto">
+                  <button 
+                    @click="processFiles"
+                    class="btn btn-primary btn-lg mobile-full"
+                    :disabled="processing"
+                  >
+                    <span v-if="processing">
+                      <div class="loading-spinner w-4 h-4 mr-2"></div>
+                      Processing...
+                    </span>
+                    <span v-else>
+                      <i class="fas fa-rocket mr-2"></i>
+                      Process Files
+                    </span>
+                  </button>
+              
+                  <!-- Progress Indicator -->
+                  <div v-if="processing" class="bg-white rounded-lg border border-neutral-200 p-4">
+                    <div class="flex items-center justify-between mb-2">
+                      <span class="text-sm font-medium text-neutral-900">{{ processingStatus }}</span>
+                      <span class="text-sm text-neutral-600">{{ processingProgress }}%</span>
+                    </div>
+                    <div class="progress">
+                      <div 
+                        class="progress-bar" 
+                        :style="{ width: processingProgress + '%' }"
+                        role="progressbar"
+                        :aria-valuenow="processingProgress"
+                        aria-valuemin="0"
+                        aria-valuemax="100"
+                      ></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            </div>
+            
+            <!-- File Queue Tab -->
+            <div v-if="activeProcessingTab === 'queue'" class="queue-tab">
+              <!-- Processing Overview moved here -->
+              <div v-if="hasProcessingFiles || completedFiles.length > 0" class="processing-overview mb-6">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 space-y-2 sm:space-y-0">
+                  <h3 class="text-lg font-semibold text-neutral-900">Processing Progress</h3>
+                  <span class="text-sm font-medium text-neutral-600">{{ overallProgress }}% Complete</span>
+                </div>
+              
+                <div class="progress mb-4">
+                  <div 
+                    class="progress-bar" 
+                    :style="{ width: overallProgress + '%' }"
+                    role="progressbar"
+                    :aria-valuenow="overallProgress"
+                    aria-valuemin="0"
+                    aria-valuemax="100"
+                  ></div>
+                </div>
+              
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+                  <div class="bg-white rounded-lg p-3 border border-neutral-200">
+                    <div class="text-2xl font-bold text-neutral-600">{{ queuedFiles.length }}</div>
+                    <div class="text-sm text-neutral-500">Queued</div>
+                  </div>
+                  <div class="bg-white rounded-lg p-3 border border-neutral-200">
+                    <div class="text-2xl font-bold text-warning-600">{{ processingFiles.length }}</div>
+                    <div class="text-sm text-neutral-500">Processing</div>
+                  </div>
+                  <div class="bg-white rounded-lg p-3 border border-neutral-200">
+                    <div class="text-2xl font-bold text-success-600">{{ completedFiles.length }}</div>
+                    <div class="text-sm text-neutral-500">Completed</div>
+                  </div>
+                  <div class="bg-white rounded-lg p-3 border border-neutral-200">
+                    <div class="text-2xl font-bold text-error-600">{{ failedFiles.length }}</div>
+                    <div class="text-sm text-neutral-500">Failed</div>
+                  </div>
+                </div>
+              </div>
+              
+              <!-- Time Estimates -->
+              <div v-if="processingStats.estimatedTimeRemaining" class="mb-6 text-center">
+                <div class="bg-white rounded-lg p-3 border border-neutral-200 inline-block">
+                  <div class="text-sm text-neutral-600">
+                    <i class="fas fa-clock mr-2 text-neutral-400"></i>
+                    Estimated time remaining: 
+                    <span class="font-medium text-neutral-900">{{ Math.ceil(processingStats.estimatedTimeRemaining) }} minutes</span>
+                    <span v-if="processingStats.processingRate > 0" class="text-neutral-500">
+                      ({{ processingStats.processingRate.toFixed(1) }} files/min)
+                    </span>
+                  </div>
+                </div>
+              </div>
+              
+              <!-- File Queue List -->
+              <div v-if="fileQueue.length > 0" class="file-queue-list">
+                <h4 class="text-md font-semibold text-neutral-900 mb-4">
+                  File Queue ({{ fileQueue.length }})
+                </h4>
+                <!-- File queue content will be inserted here via next edit -->
+            </div>
+            
+            <!-- Insights Tab -->
+            <div v-if="activeProcessingTab === 'insights'" class="insights-tab">
+              <div class="space-y-6">
+                <!-- Document Insights moved here -->
+                <div v-if="hasProcessedContent" class="insights-grid">
+                  <h3 class="text-lg font-semibold text-neutral-900 mb-4">Document Insights</h3>
+                  <!-- Content will be moved here -->
+                </div>
+              </div>
+            </div>
+            
+            <!-- Vector Analysis Tab -->
+            <div v-if="activeProcessingTab === 'analysis'" class="analysis-tab">
+              <div class="space-y-6">
+                <!-- Vector Readiness Analysis -->
+                <div v-if="hasProcessedContent" class="vector-analysis">
+                  <h3 class="text-lg font-semibold text-neutral-900 mb-4">Vector Readiness Analysis</h3>
+                  <!-- Vector analysis content will be moved here -->
+                </div>
+              </div>
+            </div>
+            
+          </div> <!-- End tab-content -->
+        </div> <!-- End processing-hub -->
+      </AccordionSection>
+
+                 :class="{
+                   'border-l-neutral-300': queueFile.status === 'queued',
+                   'border-l-warning-500': queueFile.status === 'processing',
+                   'border-l-success-500': queueFile.status === 'completed',
+                   'border-l-error-500': queueFile.status === 'failed'
+                 }">
+          
+              <div class="flex items-center space-x-3 flex-1">
+                <!-- File Icon -->
+                <div class="flex-shrink-0">
+                  <i v-if="queueFile.type === 'application/pdf'" class="fas fa-file-pdf text-error-600 text-xl"></i>
+                  <i v-else class="fas fa-file-alt text-primary-600 text-xl"></i>
+                </div>
+            
+                <!-- File Info -->
+                <div class="flex-1 min-w-0">
+                  <div class="flex items-center space-x-2 mb-2">
+                    <span class="font-medium truncate text-neutral-900">{{ queueFile.name }}</span>
+                    <span class="badge flex-shrink-0"
+                          :class="{
+                            'badge-secondary': queueFile.status === 'queued',
+                            'badge-warning': queueFile.status === 'processing',
+                            'badge-success': queueFile.status === 'completed',
+                            'badge-error': queueFile.status === 'failed'
+                          }">
+                      {{ queueFile.status.toUpperCase() }}
+                    </span>
+                  </div>
+              
+                  <div class="flex items-center space-x-4">
+                    <span class="text-sm text-neutral-600">{{ formatFileSize(queueFile.size) }}</span>
+                    
+                    <!-- Processing Progress -->
+                    <div v-if="queueFile.status === 'processing'" class="flex-1 max-w-32">
+                      <div class="progress progress-warning">
+                        <div class="progress-bar" :style="{ width: queueFile.progress + '%' }"></div>
+                      </div>
+                    </div>
+                    
+                    <!-- Processing Time -->
+                    <span v-if="queueFile.processingTime > 0" class="text-xs text-neutral-500 flex items-center">
+                      <i class="fas fa-clock mr-1"></i>
+                      {{ (queueFile.processingTime / 1000).toFixed(1) }}s
+                    </span>
+                    
+                    <!-- Chunks Generated -->
+                    <span v-if="queueFile.chunks.length > 0" class="text-xs text-neutral-500 flex items-center">
+                      <i class="fas fa-th-large mr-1"></i>
+                      {{ queueFile.chunks.length }} chunks
+                    </span>
+                  </div>
+              
+                  <!-- Error Message -->
+                  <div v-if="queueFile.error" class="mt-2 p-2 bg-error-50 border border-error-200 rounded text-xs text-error-700">
+                    <i class="fas fa-exclamation-triangle mr-1"></i>
+                    {{ queueFile.error }}
+                  </div>
+                </div>
+              </div>
+          
+              <!-- Action Buttons -->
+              <div class="flex items-center space-x-2 flex-shrink-0">
+                <button 
+                  v-if="queueFile.status === 'failed'"
+                  @click="retryFile(queueFile.id)"
+                  class="btn btn-outline btn-sm text-primary-600"
+                >
+                  <i class="fas fa-redo mr-1"></i>Retry
+                </button>
+                
+                <button 
+                  @click="removeFileFromQueue(queueFile.id)"
+                  class="btn btn-ghost btn-sm text-error-600 hover:text-error-700"
+                >
+                  <i class="fas fa-times mr-1"></i>Remove
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 3: Quality Analysis -->
+      <QualityAnalyzer v-if="chunks.length > 0 && step >= 3" :chunks="chunks" />
+
+      <!-- Step 3: Chunk Preview and Editing -->
+      <div v-if="chunks.length > 0 && step >= 3" class="card mb-6">
+        <div class="card-body">
+          <div class="flex flex-col lg:flex-row lg:items-center justify-between mb-6 space-y-4 lg:space-y-0">
+            <div>
+              <h2 class="text-2xl font-bold flex items-center text-neutral-900">
+                <span class="step-indicator-active mr-3">3</span>
+                Review & Edit Chunks ({{ chunks.length }})
+              </h2>
+              <p class="mt-1 text-neutral-600">Fine-tune your chunks for optimal AI performance</p>
+            </div>
+            <div class="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-3 w-full lg:w-auto">
+              <button 
+                id="readyToExportBtn"
+                @click="goToExport"
+                class="btn btn-primary mobile-full"
+              >
+                <i class="fas fa-bullseye mr-2"></i>Ready to Export
+              </button>
+              <button 
+                @click="clearChunks"
+                class="btn btn-destructive mobile-full"
+              >
+                <i class="fas fa-trash mr-2"></i>Clear All
+              </button>
+            </div>
+          </div>
+
+          <!-- Chunk Statistics -->
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+            <div class="card-primary">
+              <div class="card-body text-center">
+                <div class="text-3xl font-bold text-primary-600">{{ chunks.length }}</div>
+                <div class="text-sm text-neutral-600">Total Chunks</div>
+              </div>
+            </div>
+            <div class="card-primary">
+              <div class="card-body text-center">
+                <div class="text-3xl font-bold text-primary-600">{{ avgWordsPerChunk }}</div>
+                <div class="text-sm text-neutral-600">Avg Words/Chunk</div>
+              </div>
+            </div>
+            <div class="card-primary">
+              <div class="card-body text-center">
+                <div class="text-3xl font-bold text-primary-600">{{ totalWords }}</div>
+                <div class="text-sm text-neutral-600">Total Words</div>
+              </div>
+            </div>
+            <div class="card-primary">
+              <div class="card-body text-center">
+                <div class="text-3xl font-bold text-primary-600">{{ uniqueTags }}</div>
+                <div class="text-sm text-neutral-600">Unique Tags</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Search and Filter -->
+          <div class="mb-6">
+            <div class="relative">
+              <input 
+                v-model="searchQuery"
+                type="search"
+                placeholder="Search chunks by content, tags, or ID..."
+                class="form-input form-input-lg pl-12"
+              />
+              <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <i class="fas fa-search text-neutral-400"></i>
+              </div>
+            </div>
+          </div>
+
+          <!-- Chunks List -->
+          <div v-if="filteredChunks.length === 0" class="text-center py-12">
+            <div class="text-neutral-400 mb-4">
+              <i class="fas fa-search text-4xl"></i>
+            </div>
+            <h3 class="text-lg font-medium text-neutral-600 mb-2">No chunks found</h3>
+            <p class="text-neutral-500">
+              {{ searchQuery ? 'Try adjusting your search terms' : 'No chunks have been created yet' }}
+            </p>
+          </div>
+          
+          <!-- Virtual Scrolling for Performance -->
+          <div v-else class="relative">
+            <VirtualScroll 
+              :items="filteredChunks"
+              :item-height="280"
+              :container-height="400"
+              :buffer="3"
+              key-field="chunk_id"
+              class="grid grid-cols-1 lg:grid-cols-2 gap-6"
+            >
+              <template #default="{ item: chunk, index }">
+                <div class="chunk-card group">
+                  <div class="flex items-start justify-between mb-3">
+                    <div class="badge badge-outline-primary">
+                      Chunk {{ index + 1 }}
+                    </div>
+                    <button 
+                      @click="toggleChunkExpanded(index)"
+                      class="btn btn-ghost btn-sm opacity-0 group-hover:opacity-100 transition-opacity"
+                    >
+                      <i :class="expandedChunks.has(index) ? 'fas fa-chevron-up' : 'fas fa-chevron-down'"></i>
+                      {{ expandedChunks.has(index) ? 'Collapse' : 'Expand' }}
+                    </button>
+                  </div>
+                
+                  <div class="text-sm text-neutral-600 mb-3 flex items-center">
+                    <i class="fas fa-file-text mr-2 text-neutral-400"></i>
+                    <span class="truncate">{{ chunk.chunk_id }}</span>
+                    <span v-if="chunk.metadata.section" class="ml-2 badge badge-outline-secondary">
+                      {{ chunk.metadata.section }}
+                    </span>
+                  </div>
+                
+                  <div class="mb-4">
+                    <div class="prose prose-sm max-w-none">
+                      <p :class="{ 'line-clamp-3': !expandedChunks.has(index) }" class="text-sm text-neutral-700 leading-relaxed whitespace-pre-wrap">
+                        {{ chunk.content }}
+                      </p>
+                    </div>
+                  </div>
+                
+                  <div class="flex items-center space-x-4 text-xs text-neutral-500 mb-3">
+                    <span class="flex items-center">
+                      <i class="fas fa-font mr-1"></i>
+                      {{ chunk.metadata.wordCount }} words
+                    </span>
+                    <span class="flex items-center">
+                      <i class="fas fa-tags mr-1"></i>
+                      {{ chunk.tags.length }} tags
+                    </span>
+                    <span v-if="chunk.metadata.createdAt" class="flex items-center">
+                      <i class="fas fa-clock mr-1"></i>
+                      {{ new Date(chunk.metadata.createdAt).toLocaleDateString() }}
+                    </span>
+                  </div>
+                
+                  <div class="flex flex-wrap gap-2 mb-3">
+                    <span 
+                      v-for="tag in chunk.tags" 
+                      :key="tag"
+                      class="badge badge-secondary"
+                    >
+                      {{ tag }}
+                    </span>
+                    <span v-if="chunk.tags.length === 0" class="text-xs text-neutral-400 italic">
+                      No tags
+                    </span>
+                  </div>
+                
+                  <div class="flex space-x-2">
+                    <input 
+                      v-model="chunk.tagsString"
+                      @input="updateChunkTags(chunk)"
+                      type="text"
+                      placeholder="Add tags (comma-separated)..."
+                      class="form-input form-input-sm flex-1"
+                    />
+                    <button 
+                      class="btn btn-outline btn-sm" 
+                      @click="suggestTagsForChunk(chunk)"
+                      :disabled="!chunk.content || chunk.content.trim().length === 0"
+                      title="Generate tag suggestions based on chunk content"
+                    >
+                      <i class="fas fa-lightbulb mr-1"></i>
+                      Suggest
+                    </button>
+                  </div>
+                </div>
+              </template>
+            </VirtualScroll>
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 4: Export for AI Systems -->
+      <div id="exportPanel">
+        <VectorStoreExporter 
+          v-if="chunks.length > 0 && step >= 4" 
+          :chunks="chunks" 
+          @export-success="handleExportSuccess"
+        />
+      </div>
+    </div>
+
+    <!-- Notification System -->
+    <div class="fixed top-4 right-4 z-50 space-y-3 max-w-md">
+      <div
+        v-for="notification in notifications"
+        :key="notification.id"
+        class="notification transition-all duration-300 animate-scale-in"
+        :class="{
+          'notification-error': notification.type === 'error',
+          'notification-success': notification.type === 'success',
+          'notification-warning': notification.type === 'warning',
+          'notification-info': notification.type === 'info'
+        }"
+        role="alert"
+        :aria-live="notification.type === 'error' ? 'assertive' : 'polite'"
+      >
+        <div class="flex items-start justify-between">
+          <div class="flex items-start space-x-3 flex-1">
+            <div class="flex-shrink-0 mt-0.5">
+              <i
+                class="w-5 h-5"
+                :class="{
+                  'fas fa-exclamation-circle text-error-600': notification.type === 'error',
+                  'fas fa-check-circle text-success-600': notification.type === 'success',
+                  'fas fa-exclamation-triangle text-warning-600': notification.type === 'warning',
+                  'fas fa-info-circle text-primary-600': notification.type === 'info'
+                }"
+              ></i>
+            </div>
+            <div class="flex-1 min-w-0">
+              <p class="text-sm font-medium text-neutral-900">{{ notification.message }}</p>
+              <div v-if="notification.details" class="mt-2 text-xs text-neutral-600 whitespace-pre-line">
+                {{ notification.details }}
+              </div>
+            </div>
+          </div>
+          <button
+            @click="removeNotification(notification.id)"
+            class="btn btn-ghost btn-sm text-neutral-400 hover:text-neutral-600 flex-shrink-0 ml-2"
+            aria-label="Close notification"
+          >
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script>
+import { parseMarkdown, extractMetadata } from '../utils/markdownParser.js';
+import { parsePdf, extractPdfMetadata } from '../utils/pdfParser.js';
+import { chunkText, chunkBySections, suggestTags } from '../utils/chunker.js';
+import { saveAs } from 'file-saver';
+import ChunkingGuide from './ChunkingGuide.vue';
+import QualityAnalyzer from './QualityAnalyzer.vue';
+import VectorStoreExporter from './VectorStoreExporter.vue';
+import LoadingSkeleton from './ui/LoadingSkeleton.vue';
+import VirtualScroll from './VirtualScroll.vue';
+import AccordionSection from './ui/AccordionSection.vue';
+import { useVersionStore } from '../stores/versions.ts';
+import { useExportStore } from '../stores/export.ts';
+import { useContentStore } from '../stores/content.ts';
+import { useErrorHandler } from '../composables/useErrorHandler.ts';
+
+export default {
+  name: 'DocumentProcessor',
+  components: {
+    ChunkingGuide,
+    QualityAnalyzer,
+    VectorStoreExporter,
+    LoadingSkeleton,
+    VirtualScroll,
+    AccordionSection
+  },
+  setup() {
+    const { addError, handleAsyncError, handleSyncError, validateInput } = useErrorHandler();
+    const versionStore = useVersionStore();
+    const exportStore = useExportStore();
+    const contentStore = useContentStore();
+    
+    return { 
+      addError, 
+      handleAsyncError, 
+      handleSyncError, 
+      validateInput,
+      versionStore,
+      exportStore,
+      contentStore
+    };
+  },
+  data() {
+    return {
+      // Local UI state only - upload/processing state moved to export store
+      searchQuery: '',
+      expandedChunks: new Set(),
+      step: 1,
+      dragActive: false,
+      notifications: [],
+      // Enhanced file tracking for multi-document processing
+      fileQueue: [], // Array of file objects with enhanced status tracking
+      processingStats: {
+        startTime: null,
+        processedFiles: 0,
+        totalFiles: 0,
+        estimatedTimeRemaining: null,
+        processingRate: 0
+      },
+      // Active tab for processing interface
+      activeProcessingTab: 'configure',
+      processingTabs: [
+        { id: 'configure', label: 'Configure', icon: 'fas fa-cogs' },
+        { id: 'queue', label: 'File Queue', icon: 'fas fa-list', badge: 0 },
+        { id: 'insights', label: 'Insights', icon: 'fas fa-chart-bar' },
+        { id: 'analysis', label: 'Vector Analysis', icon: 'fas fa-brain' }
+      ],
+      chunkingOptions: {
+        chunkBy: 'words',
+        chunkSize: 500,
+        overlap: 50,
+        autoTag: true
+      },
+      // File validation constants
+      FILE_SIZE_LIMITS: {
+        'pdf': 50 * 1024 * 1024, // 50MB for PDFs
+        'markdown': 10 * 1024 * 1024 // 10MB for markdown files
+      },
+      MAX_FILES: 20,
+      MAX_TOTAL_SIZE: 200 * 1024 * 1024, // 200MB total
+      DANGEROUS_EXTENSIONS: ['.exe', '.bat', '.cmd', '.scr', '.pif', '.vbs', '.js', '.jar'],
+      MEMORY_WARNING_THRESHOLD: 100 * 1024 * 1024, // 100MB
+      MEMORY_CRITICAL_THRESHOLD: 500 * 1024 * 1024 // 500MB
+    };
+  },
+  
+  computed: {
+    // Access store data through computed properties
+    uploadedFiles() {
+      return this.exportStore.uploadedFiles;
+    },
+    chunks() {
+      return this.contentStore.chunks;
+    },
+    processing() {
+      return this.exportStore.isProcessingDocuments;
+    },
+    processingProgress() {
+      return this.exportStore.processingProgress;
+    },
+    processingStatus() {
+      return this.exportStore.processingStatus;
+    },
+    
+    processingConfigSummary() {
+      const method = this.chunkingMethod === 'sections' ? 'By sections' : 'Fixed size';
+      const size = this.chunkingMethod === 'sections' ? 'Auto' : `${this.chunkSize} words`;
+      const overlap = this.chunkingMethod === 'sections' ? 'N/A' : `${this.overlapSize} words`;
+      return `${method} • ${size} • ${overlap} overlap`;
+    },
+    
+    filteredChunks() {
+      if (!this.searchQuery) return this.chunks;
+      
+      // Sanitize search query before using it
+      const sanitizedQuery = this.sanitizeSearchQuery(this.searchQuery).toLowerCase();
+      if (!sanitizedQuery) return this.chunks;
+      
+      return this.chunks.filter(chunk => 
+        chunk.content.toLowerCase().includes(sanitizedQuery) ||
+        (chunk.tags && chunk.tags.some(tag => tag.toLowerCase().includes(sanitizedQuery))) ||
+        (chunk.chunk_id && chunk.chunk_id.toLowerCase().includes(sanitizedQuery))
+      );
+    },
+    avgWordsPerChunk() {
+      if (this.chunks.length === 0) return 0;
+      return Math.round(this.totalWords / this.chunks.length);
+    },
+    totalWords() {
+      return this.chunks.reduce((sum, chunk) => sum + (chunk.metadata?.wordCount || 0), 0);
+    },
+    uniqueTags() {
+      const allTags = this.chunks.flatMap(chunk => chunk.tags);
+      return new Set(allTags).size;
+    },
+    
+    // Slider progress calculations for modern slider styling
+    chunkSizeProgress() {
+      const min = this.chunkingOptions.chunkBy === 'words' ? 200 : 800;
+      const max = this.chunkingOptions.chunkBy === 'words' ? 1000 : 4000;
+      const value = this.chunkingOptions.chunkSize;
+      return ((value - min) / (max - min)) * 100;
+    },
+    
+    overlapProgress() {
+      const min = 0;
+      const max = Math.floor(this.chunkingOptions.chunkSize * 0.3);
+      const value = this.chunkingOptions.overlap;
+      return max > 0 ? ((value - min) / (max - min)) * 100 : 0;
+    },
+    
+    // Enhanced file tracking computed properties
+    queuedFiles() {
+      return this.fileQueue.filter(file => file.status === 'queued');
+    },
+    processingFiles() {
+      return this.fileQueue.filter(file => file.status === 'processing');
+    },
+    completedFiles() {
+      return this.fileQueue.filter(file => file.status === 'completed');
+    },
+    failedFiles() {
+      return this.fileQueue.filter(file => file.status === 'failed');
+    },
+    hasProcessingFiles() {
+      return this.processingFiles.length > 0;
+    },
+    overallProgress() {
+      if (this.fileQueue.length === 0) return 0;
+      const completed = this.completedFiles.length;
+      const failed = this.failedFiles.length;
+      return Math.round(((completed + failed) / this.fileQueue.length) * 100);
+    }
+  },
+  watch: {
+    // Sanitize search query in real-time
+    searchQuery: {
+      handler(newValue) {
+        if (newValue && typeof newValue === 'string') {
+          const sanitized = this.sanitizeSearchQuery(newValue);
+          if (sanitized !== newValue) {
+            this.$nextTick(() => {
+              this.searchQuery = sanitized;
+            });
+          }
+        }
+      },
+      immediate: false
+    },
+    
+    // Validate chunking options when they change
+    'chunkingOptions.chunkSize': {
+      handler(newValue) {
+        if (typeof newValue !== 'number' || newValue < 0) {
+          this.$nextTick(() => {
+            this.chunkingOptions.chunkSize = 500; // Reset to default
+          });
+        }
+      }
+    },
+    
+    'chunkingOptions.overlap': {
+      handler(newValue) {
+        if (typeof newValue !== 'number' || newValue < 0) {
+          this.$nextTick(() => {
+            this.chunkingOptions.overlap = 50; // Reset to default
+          });
+        }
+      }
+    }
+  },
+  methods: {
+    // Processing Tab Management Methods
+    switchProcessingTab(tabId) {
+      this.activeProcessingTab = tabId;
+      
+      // Auto-focus relevant sections based on tab
+      if (tabId === 'queue' && this.fileQueue.length === 0 && this.uploadedFiles.length > 0) {
+        // If queue is empty but files uploaded, suggest processing
+        this.$nextTick(() => {
+          const processButton = this.$refs.processButton;
+          if (processButton) processButton.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        });
+      }
+    },
+    
+    getTabBadge(tabId) {
+      switch (tabId) {
+        case 'queue':
+          return this.fileQueue.length > 0 ? this.fileQueue.length : 0;
+        case 'insights':
+          return this.hasProcessedContent ? '✓' : '';
+        case 'analysis':
+          return this.hasProcessedContent && this.vectorReadinessScore > 0 ? Math.round(this.vectorReadinessScore) : '';
+        default:
+          return null;
+      }
+    },
+    
+    getProcessingSummary() {
+      if (this.completedFiles.length > 0) {
+        return `${this.completedFiles.length} files processed, ${this.totalChunks} chunks created`;
+      } else if (this.processingFiles.length > 0) {
+        return `Processing ${this.processingFiles.length} files...`;
+      } else if (this.fileQueue.length > 0) {
+        return `${this.fileQueue.length} files ready to process`;
+      } else {
+        return 'Configure your processing options';
+      }
+    },
+    
+    // Enhanced file queue management methods
+    createFileObject(file) {
+      return {
+        file: file,
+        name: file.name,
+        size: file.size,
+        type: file.type,
+        status: 'queued', // queued | processing | completed | failed | paused
+        progress: 0,
+        chunks: [],
+        error: null,
+        processingTime: 0,
+        startTime: null,
+        endTime: null,
+        id: `file_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
+      };
+    },
+    
+    updateFileStatus(fileId, status, progress = null, error = null) {
+      const file = this.fileQueue.find(f => f.id === fileId);
+      if (file) {
+        file.status = status;
+        if (progress !== null) file.progress = progress;
+        if (error) file.error = error;
+        
+        if (status === 'processing' && !file.startTime) {
+          file.startTime = Date.now();
+        } else if ((status === 'completed' || status === 'failed') && !file.endTime) {
+          file.endTime = Date.now();
+          if (file.startTime) {
+            file.processingTime = file.endTime - file.startTime;
+          }
+        }
+        
+        this.updateProcessingStats();
+      }
+    },
+    
+    updateProcessingStats() {
+      const completed = this.completedFiles.length;
+      const failed = this.failedFiles.length;
+      const total = this.fileQueue.length;
+      
+      this.processingStats.processedFiles = completed + failed;
+      this.processingStats.totalFiles = total;
+      
+      if (this.processingStats.startTime && completed > 0) {
+        const elapsed = (Date.now() - this.processingStats.startTime) / 1000 / 60; // minutes
+        this.processingStats.processingRate = completed / elapsed;
+        
+        const remaining = total - (completed + failed);
+        if (this.processingStats.processingRate > 0) {
+          this.processingStats.estimatedTimeRemaining = remaining / this.processingStats.processingRate;
+        }
+      }
+    },
+    
+    retryFile(fileId) {
+      const file = this.fileQueue.find(f => f.id === fileId);
+      if (file) {
+        file.status = 'queued';
+        file.progress = 0;
+        file.error = null;
+        file.startTime = null;
+        file.endTime = null;
+        file.processingTime = 0;
+        
+        // Process the file immediately
+        this.processFileInQueue(file);
+      }
+    },
+    
+    removeFileFromQueue(fileId) {
+      const index = this.fileQueue.findIndex(f => f.id === fileId);
+      if (index > -1) {
+        this.fileQueue.splice(index, 1);
+        this.updateProcessingStats();
+      }
+    },
+    
+    // Comprehensive file validation methods
+    validateFileName(filename) {
+      // Sanitize filename and check for malicious patterns
+      const sanitized = filename.replace(/[<>:"/\\|?*\x00-\x1f]/g, '');
+      
+      // Check for dangerous extensions
+      const hasExt = this.DANGEROUS_EXTENSIONS.some(ext => 
+        filename.toLowerCase().endsWith(ext)
+      );
+      
+      if (hasExt) {
+        return { 
+          isValid: false, 
+          error: 'Potentially dangerous file type detected',
+          sanitized
+        };
+      }
+      
+      // Check for suspicious patterns
+      const suspiciousPatterns = [
+        /\.{2,}/, // Multiple dots
+        /^(con|prn|aux|nul|com[1-9]|lpt[1-9])$/i, // Windows reserved names
+        /^\s*$/, // Empty or whitespace only
+        /^\./, // Hidden files starting with dot
+      ];
+      
+      if (suspiciousPatterns.some(pattern => pattern.test(filename))) {
+        return { 
+          isValid: false, 
+          error: 'Invalid filename format',
+          sanitized
+        };
+      }
+      
+      return { isValid: true, sanitized };
+    },
+
+    async validateFileContent(file) {
+      const result = await this.handleAsyncError(async () => {
+        // Skip content validation for PDF files (they are binary)
+        if (file.type === 'application/pdf' || file.name.toLowerCase().endsWith('.pdf')) {
+          // For PDFs, just check the header to ensure it's a valid PDF
+          const chunk = file.slice(0, 4);
+          const headerBytes = await this.readFileAsArrayBuffer(chunk);
+          const headerArray = new Uint8Array(headerBytes);
+          const header = String.fromCharCode.apply(null, headerArray);
+          
+          if (header !== '%PDF') {
+            throw new Error('Invalid PDF file: File does not start with PDF header');
+          }
+          
+          return true;
+        }
+        
+        // For text files (markdown), read and validate as before
+        const chunk = file.slice(0, 1024); // First 1KB
+        const text = await this.readFileAsText(chunk);
+        
+        // Check for binary content in markdown files
+        if (file.name.toLowerCase().match(/\.(md|markdown)$/)) {
+          const binaryChars = text.match(/[\x00-\x08\x0E-\x1F]/g);
+          if (binaryChars && binaryChars.length > 10) {
+            throw new Error('File appears to contain binary data');
+          }
+        }
+        
+        // Check for extremely long lines that might cause issues
+        const lines = text.split('\n');
+        const longLines = lines.filter(line => line.length > 10000);
+        if (longLines.length > 0) {
+          throw new Error('File contains extremely long lines that may cause processing issues');
+        }
+        
+        return true;
+      }, { component: 'DocumentProcessor', action: 'validateFileContent' });
+      
+      return result;
+    },
+
+    validateFileSize(file) {
+      const fileType = file.type === 'application/pdf' ? 'pdf' : 'markdown';
+      const limit = this.FILE_SIZE_LIMITS[fileType];
+      
+      if (file.size > limit) {
+        return {
+          isValid: false,
+          error: `File size (${this.formatFileSize(file.size)}) exceeds ${this.formatFileSize(limit)} limit for ${fileType} files`
+        };
+      }
+      
+      if (file.size === 0) {
+        return {
+          isValid: false,
+          error: 'File is empty'
+        };
+      }
+      
+      return { isValid: true };
+    },
+
+    validateTotalFileSize() {
+      const totalSize = this.uploadedFiles.reduce((sum, file) => sum + file.size, 0);
+      
+      if (totalSize > this.MAX_TOTAL_SIZE) {
+        return {
+          isValid: false,
+          error: `Total file size (${this.formatFileSize(totalSize)}) exceeds ${this.formatFileSize(this.MAX_TOTAL_SIZE)} limit`
+        };
+      }
+      
+      return { isValid: true };
+    },
+
+    validateFileType(file) {
+      const allowedTypes = ['text/markdown', 'application/pdf'];
+      const allowedExtensions = ['.md', '.markdown', '.pdf'];
+      
+      const hasValidType = allowedTypes.includes(file.type);
+      const hasValidExtension = allowedExtensions.some(ext => 
+        file.name.toLowerCase().endsWith(ext)
+      );
+      
+      if (!hasValidType && !hasValidExtension) {
+        return {
+          isValid: false,
+          error: 'Unsupported file type. Only .md, .markdown, and .pdf files are allowed'
+        };
+      }
+      
+      return { isValid: true };
+    },
+
+    checkMemoryUsage() {
+      if (!performance.memory) {
+        return { status: 'unknown', usage: 0 };
+      }
+      
+      const currentMemory = performance.memory.usedJSHeapSize;
+      
+      if (currentMemory > this.MEMORY_CRITICAL_THRESHOLD) {
+        return { 
+          status: 'critical', 
+          usage: currentMemory,
+          message: 'Critical memory usage detected. Please refresh the page before processing more files.'
+        };
+      } else if (currentMemory > this.MEMORY_WARNING_THRESHOLD) {
+        return { 
+          status: 'warning', 
+          usage: currentMemory,
+          message: `High memory usage detected (${Math.round(currentMemory / (1024 * 1024))}MB). Consider processing fewer files at once.`
+        };
+      }
+      
+      return { status: 'normal', usage: currentMemory };
+    },
+
+    async readFileAsText(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = (event) => {
+          const error = event.target.error;
+          let errorMessage = 'Failed to read file as text';
+          
+          if (error) {
+            switch (error.code) {
+              case error.NOT_FOUND_ERR:
+                errorMessage = 'File not found';
+                break;
+              case error.SECURITY_ERR:
+                errorMessage = 'Security error - file access denied';
+                break;
+              case error.ABORT_ERR:
+                errorMessage = 'File read operation was aborted';
+                break;
+              case error.NOT_READABLE_ERR:
+                errorMessage = 'File is not readable';
+                break;
+              case error.ENCODING_ERR:
+                errorMessage = 'File encoding error';
+                break;
+              default:
+                errorMessage = `File read error: ${error.message || 'Unknown error'}`;
+            }
+          }
+          
+          reject(new Error(errorMessage));
+        };
+        reader.readAsText(file);
+      });
+    },
+
+    goToExport() {
+      this.step = 4;
+      this.$nextTick(() => {
+        const exportPanel = document.querySelector('#exportPanel');
+        if (exportPanel) {
+          exportPanel.scrollIntoView({ behavior: 'smooth' });
+        }
+      });
+    },
+    
+    async handleFileUpload(event) {
+      const files = Array.from(event.target.files);
+      await this.processUploadedFiles(files);
+    },
+
+    async processUploadedFiles(files) {
+      const rejectedFiles = [];
+      const validFiles = [];
+      
+      // Check memory usage before processing
+      const memoryStatus = this.checkMemoryUsage();
+      if (memoryStatus.status === 'critical') {
+        this.showError(memoryStatus.message);
+        return;
+      } else if (memoryStatus.status === 'warning') {
+        this.showWarning(memoryStatus.message);
+      }
+      
+      // Check total file count
+      if (this.uploadedFiles.length + files.length > this.MAX_FILES) {
+        this.showError(`Cannot upload more than ${this.MAX_FILES} files at once. Currently have ${this.uploadedFiles.length} files.`);
+        return;
+      }
+      
+      for (const file of files) {
+        try {
+          // Check if file already exists
+          if (this.uploadedFiles.find(f => f.name === file.name)) {
+            rejectedFiles.push({
+              name: file.name,
+              reason: 'File already uploaded'
+            });
+            continue;
+          }
+          
+          // Validate filename
+          const filenameValidation = this.validateFileName(file.name);
+          if (!filenameValidation.isValid) {
+            rejectedFiles.push({
+              name: file.name,
+              reason: filenameValidation.error
+            });
+            continue;
+          }
+          
+          // Validate file type
+          const typeValidation = this.validateFileType(file);
+          if (!typeValidation.isValid) {
+            rejectedFiles.push({
+              name: file.name,
+              reason: typeValidation.error
+            });
+            continue;
+          }
+          
+          // Validate file size
+          const sizeValidation = this.validateFileSize(file);
+          if (!sizeValidation.isValid) {
+            rejectedFiles.push({
+              name: file.name,
+              reason: sizeValidation.error
+            });
+            continue;
+          }
+          
+          // Validate file content (async)
+          console.log(`Validating content for file: ${file.name}, type: ${file.type}, size: ${file.size}`);
+          const contentValidation = await this.validateFileContent(file);
+          if (contentValidation.error) {
+            console.error(`Content validation failed for ${file.name}:`, contentValidation.error);
+            rejectedFiles.push({
+              name: file.name,
+              reason: contentValidation.error.message
+            });
+            continue;
+          }
+          console.log(`Content validation passed for ${file.name}`);
+          
+          validFiles.push(file);
+          
+        } catch (error) {
+          this.addError({
+            message: `Validation error for ${file.name}`,
+            details: error.message,
+            component: 'DocumentProcessor',
+            action: 'fileValidation',
+            severity: 'medium'
+          });
+          
+          rejectedFiles.push({
+            name: file.name,
+            reason: `Validation error: ${error.message}`
+          });
+        }
+      }
+      
+      // Check total size after adding valid files
+      const potentialFiles = [...this.uploadedFiles, ...validFiles];
+      const totalSize = potentialFiles.reduce((sum, file) => sum + file.size, 0);
+      
+      if (totalSize > this.MAX_TOTAL_SIZE) {
+        const currentSize = this.uploadedFiles.reduce((sum, file) => sum + file.size, 0);
+        const availableSpace = this.MAX_TOTAL_SIZE - currentSize;
+        
+        this.showError(`Cannot add files: Total size would exceed ${this.formatFileSize(this.MAX_TOTAL_SIZE)} limit. Available space: ${this.formatFileSize(availableSpace)}`);
+        return;
+      }
+      
+      // Add valid files to both store and queue
+      validFiles.forEach(file => {
+        this.exportStore.uploadedFiles.push(file);
+        this.fileQueue.push(this.createFileObject(file));
+      });
+      
+      // Show results
+      if (validFiles.length > 0) {
+        this.step = 2;
+        this.showSuccess(`Successfully added ${validFiles.length} file(s)`);
+      }
+      
+      if (rejectedFiles.length > 0) {
+        this.showFileErrors(rejectedFiles);
+      }
+    },
+    
+    getChunkingDescription() {
+      switch (this.chunkingOptions.chunkBy) {
+        case 'words':
+          return 'Splits content every X words. Best for most documents.';
+        case 'characters':
+          return 'Splits by character count. More precise control over size.';
+        case 'sections':
+          return 'Splits at markdown headers. Preserves document structure.';
+        default:
+          return '';
+      }
+    },
+    
+    getOptimalRange() {
+      return this.chunkingOptions.chunkBy === 'words' ? 'Optimal: 300-800' : 'Optimal: 1500-3000';
+    },
+
+    validateChunkingOptions() {
+      const errors = [];
+      
+      // Validate chunk method
+      const validMethods = ['words', 'characters', 'sections'];
+      if (!validMethods.includes(this.chunkingOptions.chunkBy)) {
+        errors.push('Invalid chunking method');
+      }
+      
+      // Validate chunk size
+      if (this.chunkingOptions.chunkBy !== 'sections') {
+        const isWords = this.chunkingOptions.chunkBy === 'words';
+        const minSize = isWords ? 50 : 200;
+        const maxSize = isWords ? 2000 : 8000;
+        
+        if (this.chunkingOptions.chunkSize < minSize || this.chunkingOptions.chunkSize > maxSize) {
+          errors.push(`Chunk size must be between ${minSize} and ${maxSize} ${this.chunkingOptions.chunkBy}`);
+        }
+        
+        // Validate overlap
+        const maxOverlap = Math.floor(this.chunkingOptions.chunkSize * 0.5);
+        if (this.chunkingOptions.overlap < 0 || this.chunkingOptions.overlap > maxOverlap) {
+          errors.push(`Overlap must be between 0 and ${maxOverlap} (50% of chunk size)`);
+        }
+      }
+      
+      return {
+        isValid: errors.length === 0,
+        errors
+      };
+    },
+    
+    removeFile(filename) {
+      this.uploadedFiles = this.uploadedFiles.filter(f => f.name !== filename);
+    },
+    
+    formatFileSize(bytes) {
+      if (bytes < 1024) return bytes + ' B';
+      if (bytes < 1024 * 1024) return Math.round(bytes / 1024) + ' KB';
+      return Math.round(bytes / (1024 * 1024)) + ' MB';
+    },
+    
+    // Enhanced file queue processing method
+    async processFileInQueue(fileObj) {
+      this.updateFileStatus(fileObj.id, 'processing', 0);
+      
+      try {
+        let content;
+        let metadata;
+        
+        if (fileObj.file.type === 'application/pdf') {
+          this.updateFileStatus(fileObj.id, 'processing', 20);
+          
+          // Handle PDF files with timeout
+          const buffer = await Promise.race([
+            this.readFileAsArrayBuffer(fileObj.file),
+            new Promise((_, reject) => 
+              setTimeout(() => reject(new Error('File read timeout')), 30000)
+            )
+          ]);
+          
+          this.updateFileStatus(fileObj.id, 'processing', 40);
+          
+          const pdfData = await Promise.race([
+            parsePdf(buffer),
+            new Promise((_, reject) => 
+              setTimeout(() => reject(new Error('PDF parsing timeout')), 60000)
+            )
+          ]);
+          
+          content = pdfData.text;
+          metadata = extractPdfMetadata(pdfData);
+          
+          // Validate PDF content
+          if (!content || content.trim().length < 10) {
+            throw new Error('PDF appears to be empty or contains mostly images');
+          }
+          
+        } else {
+          this.updateFileStatus(fileObj.id, 'processing', 20);
+          
+          // Handle Markdown files with timeout
+          const rawContent = await Promise.race([
+            this.readFileContent(fileObj.file),
+            new Promise((_, reject) => 
+              setTimeout(() => reject(new Error('File read timeout')), 30000)
+            )
+          ]);
+          
+          // Additional content validation for markdown
+          if (!rawContent || rawContent.trim().length === 0) {
+            throw new Error('File appears to be empty');
+          }
+          
+          content = parseMarkdown(rawContent);
+          metadata = extractMetadata(rawContent);
+        }
+        
+        this.updateFileStatus(fileObj.id, 'processing', 60);
+        
+        // Final content validation
+        if (!content || content.trim().length === 0) {
+          throw new Error('No readable content found in file');
+        }
+        
+        if (content.length > 5000000) { // 5MB of text
+          throw new Error('File content is too large to process safely');
+        }
+        
+        this.updateFileStatus(fileObj.id, 'processing', 80);
+        
+        let fileChunks;
+        if (this.chunkingOptions.chunkBy === 'sections' && fileObj.file.type !== 'application/pdf') {
+          // Section-based chunking only for markdown
+          const originalContent = await this.readFileContent(fileObj.file);
+          fileChunks = chunkBySections(originalContent, fileObj.file.name);
+        } else {
+          fileChunks = chunkText(content, fileObj.file.name, this.chunkingOptions);
+        }
+        
+        // Validate chunks
+        if (!fileChunks || fileChunks.length === 0) {
+          throw new Error('No chunks could be created from this file');
+        }
+        
+        if (fileChunks.length > 1000) {
+          throw new Error('File produces too many chunks (>1000). Try larger chunk sizes.');
+        }
+        
+        // Add auto-suggested tags if enabled
+        if (this.chunkingOptions.autoTag) {
+          this.updateFileStatus(fileObj.id, 'processing', 90);
+          
+          fileChunks.forEach(chunk => {
+            try {
+              const suggestions = suggestTags(chunk.content);
+              chunk.tags = [...chunk.tags, ...suggestions];
+              chunk.tagsString = chunk.tags.join(', ');
+            } catch (error) {
+              console.warn('Error generating tags for chunk:', error);
+              // Continue without tags rather than failing
+            }
+          });
+        }
+        
+        // Store chunks in file object and add to content store
+        fileObj.chunks = fileChunks;
+        this.contentStore.chunks.push(...fileChunks);
+        
+        this.updateFileStatus(fileObj.id, 'completed', 100);
+        
+        return fileChunks;
+        
+      } catch (error) {
+        this.updateFileStatus(fileObj.id, 'failed', fileObj.progress, error.message);
+        
+        // Log detailed error for debugging
+        this.addError({
+          message: `Failed to process ${fileObj.name}`,
+          details: error.message,
+          component: 'DocumentProcessor',
+          action: 'processFileInQueue',
+          severity: 'medium'
+        });
+        
+        throw error;
+      }
+    },
+    
+    async processFiles() {
+      // Validate chunking options before processing
+      const chunkingValidation = this.validateChunkingOptions();
+      if (!chunkingValidation.isValid) {
+        this.showError('Invalid chunking configuration', chunkingValidation.errors.join('\n'));
+        return;
+      }
+      
+      // Check if files are uploaded
+      if (this.fileQueue.length === 0) {
+        this.showError('No files to process. Please upload some files first.');
+        return;
+      }
+      
+      // Check memory before starting
+      const memoryStatus = this.checkMemoryUsage();
+      if (memoryStatus.status === 'critical') {
+        this.showError(memoryStatus.message);
+        return;
+      }
+      
+      // Initialize processing stats
+      this.processingStats.startTime = Date.now();
+      this.processingStats.processedFiles = 0;
+      this.processingStats.totalFiles = this.fileQueue.length;
+      this.processingStats.estimatedTimeRemaining = null;
+      this.processingStats.processingRate = 0;
+      
+      // Clear existing chunks
+      this.contentStore.chunks.splice(0);
+      
+      // Set all files to queued status
+      this.fileQueue.forEach(file => {
+        if (file.status === 'failed') {
+          file.status = 'queued';
+          file.progress = 0;
+          file.error = null;
+        }
+      });
+      
+      this.exportStore.setProcessingDocuments(true, 'Starting batch processing...', 0);
+      
+      // Process files concurrently with a limit
+      const CONCURRENT_LIMIT = 3; // Process max 3 files at once
+      const queuedFiles = this.fileQueue.filter(f => f.status === 'queued');
+      
+      try {
+        // Process files in batches
+        for (let i = 0; i < queuedFiles.length; i += CONCURRENT_LIMIT) {
+          const batch = queuedFiles.slice(i, i + CONCURRENT_LIMIT);
+          
+          // Process batch concurrently
+          const batchPromises = batch.map(fileObj => 
+            this.processFileInQueue(fileObj).catch(error => {
+              // Individual file errors are already handled in processFileInQueue
+              console.warn(`File ${fileObj.name} failed:`, error.message);
+              return null;
+            })
+          );
+          
+          await Promise.all(batchPromises);
+          
+          // Update overall progress
+          const processed = this.completedFiles.length + this.failedFiles.length;
+          const progress = Math.round((processed / this.fileQueue.length) * 100);
+          this.exportStore.setProcessingDocuments(true, `Processed ${processed}/${this.fileQueue.length} files`, progress);
+          
+          // Check memory between batches
+          const memCheck = this.checkMemoryUsage();
+          if (memCheck.status === 'critical') {
+            this.showWarning('Memory usage is high. Pausing processing to prevent issues.');
+            break;
+          }
+        }
+        
+        // Processing complete
+        const successCount = this.completedFiles.length;
+        const failedCount = this.failedFiles.length;
+        
+        if (successCount > 0) {
+          this.step = 3;
+          this.exportStore.setProcessingDocuments(false, '', 100);
+          
+          if (failedCount === 0) {
+            this.showSuccess(`Successfully processed all ${successCount} files`);
+          } else {
+            this.showWarning(`Processed ${successCount} files successfully, ${failedCount} failed`);
+          }
+        } else {
+          this.exportStore.setProcessingDocuments(false, '', 0);
+          this.showError('No files could be processed successfully');
+        }
+        
+      } catch (error) {
+        this.exportStore.setProcessingDocuments(false, '', 0);
+        this.addError({
+          message: 'Batch processing failed',
+          details: error.message,
+          component: 'DocumentProcessor',
+          action: 'processFiles',
+          severity: 'high'
+        });
+        this.showError('Processing failed', error.message);
+      }
+    },
+    
+    // Legacy method for backward compatibility
+    async processDocuments() {
+      return this.processFiles();
+    },
+    
+    // Update slider progress for modern styling
+    updateSliderProgress() {
+      // Force reactivity update for progress calculations
+      this.$nextTick(() => {
+        // Progress is automatically calculated by computed properties
+        // This method can be used for additional slider updates if needed
+      });
+    },
+    
+    async legacyProcessFiles() {
+      // Keep the original processing logic for reference
+      const result = await this.handleAsyncError(async () => {
+        for (const file of this.uploadedFiles) {
+          const fileResult = await this.handleAsyncError(async () => {
+            let content;
+            let metadata;
+            
+            if (file.type === 'application/pdf') {
+              // Handle PDF files with timeout
+              const buffer = await Promise.race([
+                this.readFileAsArrayBuffer(file),
+                new Promise((_, reject) => 
+                  setTimeout(() => reject(new Error('File read timeout')), 30000)
+                )
+              ]);
+              
+              const pdfData = await Promise.race([
+                parsePdf(buffer),
+                new Promise((_, reject) => 
+                  setTimeout(() => reject(new Error('PDF parsing timeout')), 60000)
+                )
+              ]);
+              
+              content = pdfData.text;
+              metadata = extractPdfMetadata(pdfData);
+              
+              // Validate PDF content
+              if (!content || content.trim().length < 10) {
+                throw new Error('PDF appears to be empty or contains mostly images');
+              }
+              
+            } else {
+              // Handle Markdown files with timeout
+              const rawContent = await Promise.race([
+                this.readFileContent(file),
+                new Promise((_, reject) => 
+                  setTimeout(() => reject(new Error('File read timeout')), 30000)
+                )
+              ]);
+              
+              // Additional content validation for markdown
+              if (!rawContent || rawContent.trim().length === 0) {
+                throw new Error('File appears to be empty');
+              }
+              
+              content = parseMarkdown(rawContent);
+              metadata = extractMetadata(rawContent);
+            }
+            
+            // Final content validation
+            if (!content || content.trim().length === 0) {
+              throw new Error('No readable content found in file');
+            }
+            
+            if (content.length > 5000000) { // 5MB of text
+              throw new Error('File content is too large to process safely');
+            }
+            
+            let fileChunks;
+            if (this.chunkingOptions.chunkBy === 'sections' && file.type !== 'application/pdf') {
+              // Section-based chunking only for markdown
+              const originalContent = await this.readFileContent(file);
+              fileChunks = chunkBySections(originalContent, file.name);
+            } else {
+              fileChunks = chunkText(content, file.name, this.chunkingOptions);
+            }
+            
+            // Validate chunks
+            if (!fileChunks || fileChunks.length === 0) {
+              throw new Error('No chunks could be created from this file');
+            }
+            
+            if (fileChunks.length > 1000) {
+              throw new Error('File produces too many chunks (>1000). Try larger chunk sizes.');
+            }
+            
+            // Add auto-suggested tags if enabled
+            if (this.chunkingOptions.autoTag) {
+              fileChunks.forEach(chunk => {
+                const tagResult = this.handleSyncError(() => {
+                  const suggestions = suggestTags(chunk.content);
+                  chunk.tags = [...chunk.tags, ...suggestions];
+                  chunk.tagsString = chunk.tags.join(', ');
+                }, { component: 'DocumentProcessor', action: 'tagGeneration' });
+                
+                if (tagResult.error) {
+                  console.warn('Error generating tags for chunk:', tagResult.error);
+                  // Continue without tags rather than failing
+                }
+              });
+            }
+            
+            return fileChunks;
+            
+          }, { component: 'DocumentProcessor', action: 'processFile' });
+          
+          if (fileResult.error) {
+            // Handle specific file processing errors
+            const error = fileResult.error;
+            if (error.message.includes('password') || error.message.includes('encrypted')) {
+              this.showError(`${file.name}: This PDF is password protected or encrypted and cannot be processed`);
+            } else if (error.message.includes('timeout')) {
+              this.showError(`${file.name}: Processing timeout - file may be too large or complex`);
+            } else if (error.message.includes('Invalid PDF')) {
+              this.showError(`${file.name}: Invalid or corrupted PDF file`);
+            } else if (error.message.includes('too large')) {
+              this.showError(`${file.name}: File is too large to process safely`);
+            } else if (error.message.includes('too many chunks')) {
+              this.showError(`${file.name}: File produces too many chunks. Try using larger chunk sizes.`);
+            } else {
+              this.showError(`${file.name}: ${error.message}`);
+            }
+          } else if (fileResult.data) {
+            // Successfully processed file
+            const fileChunks = fileResult.data;
+            this.chunks.push(...fileChunks);
+            this.showSuccess(`Successfully processed ${file.name} (${fileChunks.length} chunks)`);
+            
+            // Memory usage check after each file
+            const memoryCheck = this.checkMemoryUsage();
+            if (memoryCheck.status === 'warning') {
+              this.showWarning(memoryCheck.message);
+            }
+          }
+          
+          processedFiles++;
+          this.processingProgress = Math.round((processedFiles / totalFiles) * 100);
+        }
+        
+        // Final validation
+        if (this.chunks.length === 0) {
+          throw new Error('No chunks were created from any of the uploaded files. Please check your files and try again.');
+        }
+        
+        return {
+          chunksCreated: this.chunks.length,
+          filesProcessed: processedFiles
+        };
+        
+      }, { component: 'DocumentProcessor', action: 'processFiles' });
+      
+      if (result.error) {
+        // Handle global processing errors
+        const error = result.error;
+        if (error.message.includes('timeout')) {
+          this.showError('Processing timeout: The operation took too long to complete. Try processing fewer or smaller files.');
+        } else if (error.message.includes('memory') || error.message.includes('Memory')) {
+          this.showError('Out of memory: Files are too large to process. Try smaller files or process them individually.');
+        } else if (error.message.includes('Critical memory')) {
+          this.showError('Critical memory usage reached. Please refresh the page and try processing fewer files.');
+        } else {
+          this.showError(`Processing failed: ${error.message}`);
+        }
+        
+        // Clear chunks to free memory on error
+        this.chunks = [];
+        
+      } else if (result.data) {
+        // Success
+        this.step = 3;
+        this.showSuccess(`Processing complete! Created ${result.data.chunksCreated} chunks from ${result.data.filesProcessed} files`);
+      }
+      
+      // Cleanup
+      this.processing = false;
+      this.processingProgress = 0;
+      this.processingStatus = '';
+      
+      // Final memory cleanup suggestion
+      const finalMemoryStatus = this.checkMemoryUsage();
+      if (finalMemoryStatus.status !== 'normal') {
+        console.warn('High memory usage detected after processing. Consider refreshing page.');
+      }
+    },
+    
+    readFileContent(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = (event) => {
+          const error = event.target.error;
+          let errorMessage = 'Failed to read file content';
+          
+          if (error) {
+            switch (error.code) {
+              case error.NOT_FOUND_ERR:
+                errorMessage = 'File not found';
+                break;
+              case error.SECURITY_ERR:
+                errorMessage = 'Security error - file access denied';
+                break;
+              case error.ABORT_ERR:
+                errorMessage = 'File read operation was aborted';
+                break;
+              case error.NOT_READABLE_ERR:
+                errorMessage = 'File is not readable';
+                break;
+              case error.ENCODING_ERR:
+                errorMessage = 'File encoding error';
+                break;
+              default:
+                errorMessage = `File read error: ${error.message || 'Unknown error'}`;
+            }
+          }
+          
+          reject(new Error(errorMessage));
+        };
+        reader.readAsText(file);
+      });
+    },
+    
+    readFileAsArrayBuffer(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = (event) => {
+          const error = event.target.error;
+          let errorMessage = 'Failed to read file as binary data';
+          
+          if (error) {
+            switch (error.code) {
+              case error.NOT_FOUND_ERR:
+                errorMessage = 'File not found';
+                break;
+              case error.SECURITY_ERR:
+                errorMessage = 'Security error - file access denied';
+                break;
+              case error.ABORT_ERR:
+                errorMessage = 'File read operation was aborted';
+                break;
+              case error.NOT_READABLE_ERR:
+                errorMessage = 'File is not readable';
+                break;
+              case error.ENCODING_ERR:
+                errorMessage = 'File encoding error';
+                break;
+              default:
+                errorMessage = `File read error: ${error.message || 'Unknown error'}`;
+            }
+          }
+          
+          reject(new Error(errorMessage));
+        };
+        reader.readAsArrayBuffer(file);
+      });
+    },
+    
+    // Input sanitization methods
+    sanitizeSearchQuery(query) {
+      if (!query || typeof query !== 'string') return '';
+      
+      // Remove HTML tags and dangerous characters
+      return query
+        .replace(/<[^>]*>/g, '') // Remove HTML tags
+        .replace(/[<>'"&]/g, '') // Remove potentially dangerous chars
+        .replace(/\s+/g, ' ') // Normalize whitespace
+        .trim()
+        .substring(0, 200); // Limit length
+    },
+
+    sanitizeTagInput(tagString) {
+      if (!tagString || typeof tagString !== 'string') return '';
+      
+      return tagString
+        .replace(/<[^>]*>/g, '') // Remove HTML tags
+        .replace(/[<>'"&]/g, '') // Remove potentially dangerous chars
+        .replace(/[,;]+/g, ',') // Normalize separators
+        .replace(/\s+/g, ' ') // Normalize whitespace
+        .trim()
+        .substring(0, 500); // Limit length
+    },
+
+    validateTagInput(tagString) {
+      const sanitized = this.sanitizeTagInput(tagString);
+      const tags = sanitized.split(',').map(tag => tag.trim()).filter(tag => tag.length > 0);
+      
+      // Validate individual tags
+      const validTags = tags.filter(tag => {
+        // Check tag length
+        if (tag.length < 1 || tag.length > 50) return false;
+        
+        // Check for valid characters (letters, numbers, spaces, hyphens, underscores)
+        if (!/^[a-zA-Z0-9\s\-_]+$/.test(tag)) return false;
+        
+        return true;
+      });
+      
+      if (validTags.length !== tags.length) {
+        const invalidCount = tags.length - validTags.length;
+        this.showWarning(`${invalidCount} invalid tag(s) were removed. Tags must be 1-50 characters and contain only letters, numbers, spaces, hyphens, and underscores.`);
+      }
+      
+      return validTags.join(', ');
+    },
+
+    updateChunkTags(chunk) {
+      const validatedTags = this.validateTagInput(chunk.tagsString);
+      chunk.tagsString = validatedTags;
+      
+      chunk.tags = chunk.tagsString
+        .split(',')
+        .map(tag => tag.trim())
+        .filter(tag => tag.length > 0);
+    },
+
+    suggestTagsForChunk(chunk) {
+      if (!chunk.content || chunk.content.trim().length === 0) {
+        this.showWarning('Cannot suggest tags for empty content. Please ensure the chunk has content.');
+        return;
+      }
+
+      try {
+        // Generate tag suggestions using the existing suggestTags function
+        const suggestions = suggestTags(chunk.content);
+        
+        if (suggestions.length === 0) {
+          this.showInfo('Unable to find meaningful tag suggestions for this content. Try adding some manually.');
+          return;
+        }
+
+        // Get existing tags to avoid duplicates
+        const existingTags = chunk.tags || [];
+        const newSuggestions = suggestions.filter(tag => !existingTags.includes(tag));
+        
+        if (newSuggestions.length === 0) {
+          this.showInfo('All suggested tags are already present for this chunk.');
+          return;
+        }
+
+        // Combine existing tags with new suggestions
+        const combinedTags = [...existingTags, ...newSuggestions];
+        
+        // Update chunk tags
+        chunk.tags = combinedTags;
+        chunk.tagsString = combinedTags.join(', ');
+
+        this.showSuccess(`Added ${newSuggestions.length} suggested tag${newSuggestions.length === 1 ? '' : 's'}: ${newSuggestions.join(', ')}`);
+      } catch (error) {
+        console.error('Error suggesting tags:', error);
+        this.showError('There was an error generating tag suggestions. Please try again.');
+      }
+    },
+    
+    toggleChunkExpanded(index) {
+      if (this.expandedChunks.has(index)) {
+        this.expandedChunks.delete(index);
+      } else {
+        this.expandedChunks.add(index);
+      }
+    },
+    
+    
+    clearChunks() {
+      this.chunks = [];
+      this.uploadedFiles = [];
+      this.expandedChunks.clear();
+      this.step = 1;
+    },
+    
+    handleExportSuccess(data) {
+      // Handle successful export
+      console.log('Export successful:', data);
+      
+      // Auto-save version on export with the actual exported data
+      if (this.chunks.length > 0 && this.versionStore) {
+        // Generate version name from uploaded files
+        const uniqueFiles = [...new Set(this.uploadedFiles.map(file => file.name.replace(/\.[^/.]+$/, '')))]
+        const versionName = uniqueFiles.length === 1 
+          ? uniqueFiles[0] 
+          : `${uniqueFiles[0]} + ${uniqueFiles.length - 1} more files`
+        
+        // Create exported data structure
+        const exportedData = {
+          format: data.format,
+          filename: data.filename,
+          data: data.exportedData,
+          exportOptions: data.exportOptions,
+          chunkCount: data.chunkCount,
+          exportedAt: new Date().toISOString()
+        }
+        
+        const savedVersion = this.versionStore.saveVersion(
+          { 
+            chunks: this.chunks,        // Keep chunks as backup
+            exportedData: exportedData  // Store the actual exported file
+          },
+          versionName,
+          true  // isAutoSave = true
+        );
+        
+        this.showSuccess(`Export Complete & Saved! Successfully exported ${data.chunkCount} chunks in ${data.format} format. Version "${savedVersion.name}" saved to history.`);
+      } else {
+        this.showSuccess(`Successfully exported ${data.chunkCount} chunks in ${data.format} format`);
+      }
+      
+      // Emit to parent if needed
+      this.$emit('export-success', data);
+    },
+    
+    showError(message, details = null) {
+      const notification = {
+        id: Date.now(),
+        type: 'error',
+        message,
+        details,
+        timestamp: new Date()
+      };
+      this.notifications.push(notification);
+      
+      // Auto-remove after 10 seconds for errors
+      setTimeout(() => {
+        this.removeNotification(notification.id);
+      }, 10000);
+    },
+    
+    showSuccess(message) {
+      const notification = {
+        id: Date.now(),
+        type: 'success',
+        message,
+        timestamp: new Date()
+      };
+      this.notifications.push(notification);
+      
+      // Auto-remove after 5 seconds for success
+      setTimeout(() => {
+        this.removeNotification(notification.id);
+      }, 5000);
+    },
+    
+    showWarning(message) {
+      const notification = {
+        id: Date.now(),
+        type: 'warning',
+        message,
+        timestamp: new Date()
+      };
+      this.notifications.push(notification);
+      
+      // Auto-remove after 7 seconds for warnings
+      setTimeout(() => {
+        this.removeNotification(notification.id);
+      }, 7000);
+    },
+    
+    showInfo(message) {
+      const notification = {
+        id: Date.now(),
+        type: 'info',
+        message,
+        timestamp: new Date()
+      };
+      this.notifications.push(notification);
+      
+      // Auto-remove after 5 seconds for info
+      setTimeout(() => {
+        this.removeNotification(notification.id);
+      }, 5000);
+    },
+    
+    removeNotification(notificationId) {
+      const index = this.notifications.findIndex(n => n.id === notificationId);
+      if (index > -1) {
+        this.notifications.splice(index, 1);
+      }
+    },
+    
+    showFileErrors(rejectedFiles) {
+      const errorDetails = rejectedFiles.map(f => `${f.name}: ${f.reason}`).join('\n');
+      this.showError(
+        `${rejectedFiles.length} file(s) could not be uploaded`,
+        errorDetails
+      );
+    },
+    
+    handleDrop(event) {
+      event.preventDefault();
+      this.dragActive = false;
+      
+      if (this.processing) return;
+      
+      const files = Array.from(event.dataTransfer.files);
+      this.processDroppedFiles(files);
+    },
+    
+    handleDragOver(event) {
+      event.preventDefault();
+      event.dataTransfer.dropEffect = 'copy';
+    },
+    
+    handleDragEnter(event) {
+      event.preventDefault();
+      if (!this.processing) {
+        this.dragActive = true;
+      }
+    },
+    
+    handleDragLeave(event) {
+      event.preventDefault();
+      // Only hide drag state if leaving the drop zone itself
+      if (!event.relatedTarget || !event.currentTarget.contains(event.relatedTarget)) {
+        this.dragActive = false;
+      }
+    },
+    
+    async processDroppedFiles(files) {
+      // Use the same comprehensive validation as handleFileUpload
+      await this.processUploadedFiles(files);
+    }
+  }
+};
+</script>
+
+<style scoped>
+/* Utility classes for text truncation */
+.line-clamp-3 {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Prose styling for chunk content */
+.prose {
+  max-width: none;
+}
+
+.prose p {
+  margin-bottom: 0;
+}
+
+/* Modern Range Slider Styling - Inspired by Chrome/Firefox designs */
+.custom-range-slider,
+input[type="range"].custom-range-slider,
+input[type="range"] {
+  -webkit-appearance: none !important;
+  -moz-appearance: none !important;
+  appearance: none !important;
+  height: 6px !important;
+  border-radius: 3px !important;
+  background: var(--color-neutral-300) !important;
+  outline: none !important;
+  position: relative;
+  cursor: pointer !important;
+  border: none !important;
+  /* Modern gradient track background */
+  background: linear-gradient(to right, 
+    var(--color-primary-500) 0%, 
+    var(--color-primary-500) var(--slider-progress, 50%), 
+    var(--color-neutral-300) var(--slider-progress, 50%), 
+    var(--color-neutral-300) 100%) !important;
+}
+
+input[type="range"]:focus {
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+/* WebKit browsers (Chrome, Safari, Edge) - Modern Chrome-style thumb */
+.custom-range-slider::-webkit-slider-thumb,
+input[type="range"].custom-range-slider::-webkit-slider-thumb,
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none !important;
+  appearance: none !important;
+  width: 18px !important;
+  height: 18px !important;
+  border-radius: 50% !important;
+  background: var(--color-primary-500) !important;
+  cursor: pointer !important;
+  border: 2px solid white !important;
+  box-shadow: 0 2px 8px rgba(33, 150, 243, 0.3), 0 1px 3px rgba(0, 0, 0, 0.15) !important;
+  transition: all 0.2s ease !important;
+  position: relative;
+  z-index: 2;
+}
+
+input[type="range"]::-webkit-slider-thumb:hover {
+  background: var(--color-primary-600) !important;
+  transform: scale(1.15) !important;
+  box-shadow: 0 3px 12px rgba(33, 150, 243, 0.4), 0 2px 6px rgba(0, 0, 0, 0.2) !important;
+}
+
+input[type="range"]::-webkit-slider-thumb:active {
+  transform: scale(1.05) !important;
+  background: var(--color-primary-700) !important;
+  box-shadow: 0 2px 6px rgba(33, 150, 243, 0.5), 0 1px 3px rgba(0, 0, 0, 0.25) !important;
+}
+
+/* Firefox - Modern Firefox-style thumb */
+.custom-range-slider::-moz-range-thumb,
+input[type="range"].custom-range-slider::-moz-range-thumb,
+input[type="range"]::-moz-range-thumb {
+  width: 18px !important;
+  height: 18px !important;
+  border-radius: 50% !important;
+  background: #666666 !important;
+  cursor: pointer !important;
+  border: 2px solid white !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15) !important;
+  transition: all 0.2s ease !important;
+  -moz-appearance: none;
+}
+
+input[type="range"]::-moz-range-thumb:hover {
+  background: #555555 !important;
+  transform: scale(1.15) !important;
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.25) !important;
+}
+
+input[type="range"]::-moz-range-track {
+  height: 6px !important;
+  border-radius: 3px !important;
+  background: var(--color-neutral-300) !important;
+  border: none !important;
+}
+
+/* Firefox progress track styling */
+input[type="range"]::-moz-range-progress {
+  height: 6px !important;
+  border-radius: 3px !important;
+  background: var(--color-primary-500) !important;
+}
+
+/* Group hover effects for better UX */
+.group:hover .group-hover\:opacity-100 {
+  opacity: 1;
+}
+
+/* Chunk card base styles */
+.chunk-card {
+  @apply bg-white border border-neutral-200 rounded-xl p-6 shadow-sm hover:shadow-md transition-shadow duration-200;
+  min-height: 200px; /* Ensure cards have minimum height */
+  display: block; /* Ensure proper display */
+}
+
+/* Focus management for better accessibility */
+.chunk-card:focus-within {
+  @apply ring-2 ring-primary-500 ring-offset-2;
+}
+
+/* Improved drag zone styling */
+.drag-zone {
+  @apply border-2 border-dashed border-neutral-300 rounded-xl p-8 text-center
+         bg-neutral-50 transition-all duration-300 ease-in-out;
+}
+
+.drag-zone:hover {
+  @apply border-primary-400 bg-primary-50;
+}
+
+.drag-zone-active {
+  @apply border-primary-600 bg-primary-50 text-primary-700;
+}
+
+/* Radio button custom styling */
+input[type="radio"]:checked + div {
+  @apply text-primary-700;
+}
+
+/* Mobile responsiveness */
+@media (max-width: 640px) {
+  .btn {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  
+  .step-indicator {
+    width: 2.5rem;
+    height: 2.5rem;
+    font-size: 0.875rem;
+  }
+  
+  .drag-zone {
+    padding: 1.5rem;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .chunk-card,
+  .card,
+  .drag-zone {
+    border-width: 2px;
+  }
+  
+  .badge,
+  .btn {
+    border-width: 2px;
+  }
+  
+  input[type="range"]::-webkit-slider-thumb {
+    border-width: 3px;
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .chunk-card,
+  .drag-zone,
+  .notification {
+    transition: none;
+  }
+  
+  .animate-bounce {
+    animation: none;
+  }
+}
+
+/* Print styles */
+@media print {
+  .btn,
+  .notification,
+  .loading-spinner,
+  .drag-zone {
+    display: none !important;
+  }
+  
+  .card {
+    break-inside: avoid;
+  }
+  
+  .chunk-card {
+    page-break-inside: avoid;
+  }
+}
+
+/* Ensure proper touch targets on mobile */
+@media (hover: none) and (pointer: coarse) {
+  .btn,
+  input[type="checkbox"],
+  input[type="radio"] {
+    min-height: 44px;
+    min-width: 44px;
+  }
+}
+</style>

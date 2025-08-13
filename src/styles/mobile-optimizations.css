@@ -1,0 +1,364 @@
+/**
+ * Mobile Performance Optimizations
+ * 
+ * Responsive design optimizations focused on mobile performance,
+ * touch interactions, and reduced resource usage on smaller devices.
+ */
+
+/* ===== MOBILE-FIRST PERFORMANCE IMPROVEMENTS ===== */
+
+/* Optimize touch interactions */
+@media (pointer: coarse) {
+  /* Larger touch targets for better accessibility */
+  .btn,
+  .icon-button,
+  button,
+  [role="button"] {
+    min-height: 44px;
+    min-width: 44px;
+    padding: var(--space-3) var(--space-4);
+  }
+
+  /* Reduce hover effects on touch devices */
+  .hover-scale:hover,
+  .hover-lift:hover {
+    transform: none;
+    box-shadow: var(--shadow-base);
+  }
+
+  /* Optimize scroll performance */
+  .scrollable-content {
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+  }
+}
+
+/* ===== MOBILE LAYOUT OPTIMIZATIONS ===== */
+
+@media (max-width: 768px) {
+  /* Reduce spacing for mobile */
+  .container {
+    padding-left: var(--space-4);
+    padding-right: var(--space-4);
+  }
+
+  /* Stack elements more efficiently */
+  .desktop-flex {
+    flex-direction: column;
+    gap: var(--space-3);
+  }
+
+  /* Reduce font sizes for better fit */
+  .responsive-text-xl {
+    font-size: var(--font-size-lg);
+  }
+
+  .responsive-text-2xl {
+    font-size: var(--font-size-xl);
+  }
+
+  .responsive-text-3xl {
+    font-size: var(--font-size-2xl);
+  }
+
+  /* Optimize form elements */
+  .input-field,
+  .textarea-field {
+    font-size: 16px; /* Prevent zoom on iOS */
+    padding: var(--space-3);
+  }
+
+  /* Reduce shadow complexity */
+  .card-base,
+  .chunk-card {
+    box-shadow: var(--shadow-sm);
+  }
+
+  /* Simplify animations */
+  .transition-smooth {
+    transition-duration: 200ms;
+  }
+
+  /* Hide non-essential elements */
+  .desktop-only {
+    display: none !important;
+  }
+
+  /* Optimize spacing */
+  .mobile-spacing {
+    margin-bottom: var(--space-4);
+  }
+
+  /* Mobile-optimized grid */
+  .responsive-grid {
+    grid-template-columns: 1fr;
+    gap: var(--space-3);
+  }
+}
+
+/* ===== SMALL MOBILE DEVICES ===== */
+
+@media (max-width: 480px) {
+  /* Further reduce spacing */
+  .container {
+    padding-left: var(--space-3);
+    padding-right: var(--space-3);
+  }
+
+  /* Smaller buttons */
+  .btn {
+    padding: var(--space-2) var(--space-3);
+    font-size: var(--font-size-sm);
+  }
+
+  /* Compact navigation */
+  .mobile-nav {
+    padding: var(--space-2);
+  }
+
+  /* Reduce modal padding */
+  .modal-content {
+    padding: var(--space-4);
+    margin: var(--space-2);
+  }
+
+  /* Single column layout */
+  .force-single-column {
+    display: block !important;
+  }
+
+  .force-single-column > * {
+    width: 100% !important;
+    margin-bottom: var(--space-3);
+  }
+}
+
+/* ===== PERFORMANCE OPTIMIZATIONS ===== */
+
+/* Disable expensive effects on low-end devices */
+@media (max-width: 768px) and (max-resolution: 1.5dppx) {
+  /* Disable shadows on low-DPI mobile devices */
+  .card-base,
+  .chunk-card,
+  .modal-content {
+    box-shadow: none;
+    border: 1px solid var(--border-primary);
+  }
+
+  /* Disable gradients */
+  .gradient-bg {
+    background: var(--bg-primary) !important;
+  }
+
+  /* Simplify animations */
+  .fade-in,
+  .slide-in-up,
+  .scale-in {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
+
+/* ===== MOBILE NAVIGATION ===== */
+
+@media (max-width: 768px) {
+  /* Mobile tab navigation */
+  .tab-navigation {
+    overflow-x: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  .tab-navigation::-webkit-scrollbar {
+    display: none;
+  }
+
+  .tab-list {
+    flex-wrap: nowrap;
+    min-width: max-content;
+  }
+
+  .tab-item {
+    white-space: nowrap;
+    padding: var(--space-2) var(--space-3);
+    font-size: var(--font-size-sm);
+  }
+
+  /* Mobile menu */
+  .mobile-menu {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: var(--bg-primary);
+    z-index: var(--z-modal);
+    transform: translateX(-100%);
+    transition: transform var(--transition-base) ease-out;
+  }
+
+  .mobile-menu.open {
+    transform: translateX(0);
+  }
+
+  /* Mobile-optimized forms */
+  .mobile-form .form-group {
+    margin-bottom: var(--space-4);
+  }
+
+  .mobile-form .form-row {
+    flex-direction: column;
+  }
+
+  .mobile-form .form-row > * {
+    width: 100%;
+    margin-bottom: var(--space-2);
+  }
+}
+
+/* ===== TOUCH INTERACTIONS ===== */
+
+/* Remove tap highlight on iOS */
+.tap-optimized {
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+/* Improve touch feedback */
+.touch-feedback {
+  position: relative;
+  overflow: hidden;
+}
+
+.touch-feedback::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.3);
+  transform: translate(-50%, -50%);
+  transition: width 0.6s, height 0.6s;
+}
+
+.touch-feedback:active::before {
+  width: 200px;
+  height: 200px;
+}
+
+/* ===== MOBILE TYPOGRAPHY ===== */
+
+@media (max-width: 768px) {
+  /* Optimize line heights for reading */
+  body {
+    line-height: 1.6;
+  }
+
+  /* Better mobile text sizing */
+  .mobile-text-sm { font-size: var(--font-size-sm); }
+  .mobile-text-base { font-size: var(--font-size-base); }
+  .mobile-text-lg { font-size: var(--font-size-lg); }
+
+  /* Improve readability */
+  p, .text-content {
+    font-size: var(--font-size-base);
+    line-height: 1.6;
+    margin-bottom: var(--space-4);
+  }
+
+  /* Mobile-optimized headings */
+  h1 { font-size: var(--font-size-2xl); }
+  h2 { font-size: var(--font-size-xl); }
+  h3 { font-size: var(--font-size-lg); }
+  h4 { font-size: var(--font-size-base); }
+}
+
+/* ===== MOBILE UTILITIES ===== */
+
+/* Show/hide utilities */
+.mobile-only {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .mobile-only {
+    display: block;
+  }
+
+  .mobile-inline {
+    display: inline;
+  }
+
+  .mobile-flex {
+    display: flex;
+  }
+
+  .desktop-only {
+    display: none !important;
+  }
+}
+
+/* Mobile spacing utilities */
+@media (max-width: 768px) {
+  .mobile-p-2 { padding: var(--space-2); }
+  .mobile-p-3 { padding: var(--space-3); }
+  .mobile-p-4 { padding: var(--space-4); }
+  
+  .mobile-m-2 { margin: var(--space-2); }
+  .mobile-m-3 { margin: var(--space-3); }
+  .mobile-m-4 { margin: var(--space-4); }
+  
+  .mobile-mb-2 { margin-bottom: var(--space-2); }
+  .mobile-mb-3 { margin-bottom: var(--space-3); }
+  .mobile-mb-4 { margin-bottom: var(--space-4); }
+}
+
+/* ===== ACCESSIBILITY ON MOBILE ===== */
+
+/* Larger focus indicators on mobile */
+@media (max-width: 768px) {
+  :focus {
+    outline: 3px solid var(--state-focus);
+    outline-offset: 2px;
+  }
+
+  /* Better contrast for small screens */
+  .text-secondary {
+    color: var(--text-primary);
+  }
+}
+
+/* ===== PERFORMANCE MONITORING ===== */
+
+/* Visual indicator for slow rendering (development only) */
+@media (max-width: 768px) {
+  .perf-warning {
+    border-left: 4px solid var(--color-warning-500);
+    background: var(--color-warning-50);
+    padding: var(--space-2);
+    font-size: var(--font-size-xs);
+    color: var(--color-warning-700);
+  }
+}
+
+/* ===== REDUCED MOTION ON MOBILE ===== */
+
+@media (max-width: 768px) and (prefers-reduced-motion: reduce) {
+  /* Disable all animations and transitions */
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
