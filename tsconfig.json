@@ -24,7 +24,10 @@
     /* Vue specific */
     "allowJs": true,
     "checkJs": false,
-    "types": ["vite/client", "node", "vue"],
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "forceConsistentCasingInFileNames": true,
+    "types": ["vite/client", "node"],
     "baseUrl": ".",
     "paths": {
       "@/*": ["src/*"]

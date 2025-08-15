@@ -187,7 +187,7 @@ export const usePersistenceStore = defineStore('persistence', () => {
       // Check localStorage capacity
       if (jsonData.length > 5 * 1024 * 1024) { // 5MB limit
         console.warn('Data too large for localStorage fallback')
-        addError('Autosave failed - data too large for backup storage')
+        addError({ message: 'Autosave failed - data too large for backup storage', severity: 'medium' })
         return
       }
       
@@ -200,7 +200,7 @@ export const usePersistenceStore = defineStore('persistence', () => {
       
     } catch (fallbackError) {
       console.error('Critical: Both IndexedDB and localStorage autosave failed:', fallbackError)
-      addError('Critical autosave failure - your changes may not be saved automatically')
+      addError({ message: 'Critical autosave failure - your changes may not be saved automatically', severity: 'high' })
     }
   }
   

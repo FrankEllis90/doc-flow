@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { ref, computed } from 'vue'
+import { ref, computed, type ComputedRef } from 'vue'
 import type { Version, Category, ContentChunk, ExportedData, VersionStats } from '@/types'
 import storage from '@/services/indexedDBStorage'
 
@@ -17,6 +17,9 @@ export const useVersionStore = defineStore('versions', () => {
       const saved = await storage.getItem('peppercorn-kb-versions')
       if (saved) {
         versions.value = Array.isArray(saved) ? saved : []
+        console.log('Versions loaded from IndexedDB:', versions.value.length)
+      } else {
+        console.log('No versions found in IndexedDB')
       }
     } catch (error) {
       console.warn('Failed to load versions from storage:', error)
@@ -42,12 +45,14 @@ export const useVersionStore = defineStore('versions', () => {
   const saveVersionsToStorage = async () => {
     try {
       await storage.setItem('peppercorn-kb-versions', versions.value, 'version')
+      console.log('Versions saved to IndexedDB successfully:', versions.value.length)
     } catch (error) {
       console.warn('Failed to save versions to storage:', error)
       
       // Fallback to localStorage if IndexedDB fails
       try {
         localStorage.setItem('peppercorn-kb-versions', JSON.stringify(versions.value))
+        console.log('Versions saved to localStorage as fallback')
       } catch (fallbackError) {
         console.error('Both IndexedDB and localStorage failed:', fallbackError)
         throw new Error('Failed to save versions: Storage quota exceeded or unavailable')
@@ -118,6 +123,8 @@ export const useVersionStore = defineStore('versions', () => {
     }
     
     await saveVersionsToStorage()
+    
+    console.log('New version created:', newVersion.name, 'Total versions:', versions.value.length)
     
     return newVersion
   }

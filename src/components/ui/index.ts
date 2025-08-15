@@ -6,8 +6,5 @@ export { default as SettingsCard } from './SettingsCard.vue'
 export { default as StatsCard } from './StatsCard.vue'
 export { default as FeatureCard } from './FeatureCard.vue'
 
-// Re-export types for TypeScript users
-export type { Props as BaseCardProps } from './BaseCard.vue'
-export type { Props as SettingsCardProps } from './SettingsCard.vue'
-export type { Props as StatsCardProps } from './StatsCard.vue'
-export type { Props as FeatureCardProps } from './FeatureCard.vue'
+// Note: Component prop types are inferred from defineProps() in each component
+// Use ComponentProps<typeof BaseCard> if you need the prop types

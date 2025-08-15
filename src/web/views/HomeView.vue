@@ -47,6 +47,7 @@ import DocumentProcessorWizard from '../components/DocumentProcessorWizard.vue'
 import SaveVersionModal from '../../components/modals/SaveVersionModal.vue'
 import Home from '../../pages/Home.vue'
 import Settings from '../../pages/Settings.vue'
+import ManualContentWizard from '../../components/ManualContentWizard.vue'
 import { useVersionStore } from '../../stores/versions.ts'
 import { useAppStore } from '../../stores/app.ts'
 import { useContentStore } from '../../stores/content.ts'
@@ -65,7 +66,8 @@ export default {
     DocumentProcessorWizard,
     SaveVersionModal,
     Home,
-    Settings
+    Settings,
+    ManualContentWizard
   },
   setup() {
     // Initialize stores
@@ -91,7 +93,7 @@ export default {
     // Navigation mapping
     const navigationComponents = {
       'home': 'Home',
-      'manual-builder': 'ContentChunkBuilder',
+      'manual-builder': 'ManualContentWizard',
       'document-processing': 'DocumentProcessorWizard',
       'versions': 'VersionWrapper',
       'settings': 'Settings'

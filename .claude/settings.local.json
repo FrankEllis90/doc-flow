@@ -70,8 +70,12 @@
       "Bash(git rm:*)",
       "Bash(gh auth:*)",
       "Bash(git rev-parse:*)",
-      "Bash(git init:*)"
+      "Bash(git init:*)",
+      "Bash(PORT=3015 timeout 5s npm run dev)",
+      "Bash(PORT=3005 timeout 5s npm run dev)",
+      "Bash(PORT=3005 timeout 15s npm run dev)"
     ],
-    "deny": []
+    "deny": [],
+    "defaultMode": "acceptEdits"
   }
 }

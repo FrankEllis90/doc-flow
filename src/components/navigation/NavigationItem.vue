@@ -128,10 +128,10 @@ const handleClick = () => {
 }
 
 .nav-item.active {
-  background: linear-gradient(90deg, var(--brand-sage-light, #F5F7F4) 0%, rgba(168, 183, 157, 0.15) 50%, transparent 100%);
-  box-shadow: 0 6px 20px rgba(168, 183, 157, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.2);
-  transform: translateY(-1px);
-  border-right: 4px solid var(--bg-cta-primary, #E6B800);
+  background: linear-gradient(90deg, #F5F7F4 0%, rgba(168, 183, 157, 0.25) 100%);
+  box-shadow: 0 8px 32px rgba(168, 183, 157, 0.4);
+  transform: translateX(4px);
+  border-left: 6px solid #E6B800;
   border-color: rgba(168, 183, 157, 0.4);
   position: relative;
 }
@@ -139,14 +139,14 @@ const handleClick = () => {
 .nav-item.active::after {
   content: '';
   position: absolute;
-  left: 0;
+  left: -6px;
   top: 50%;
   transform: translateY(-50%);
-  width: 4px;
-  height: 24px;
-  background: linear-gradient(180deg, var(--bg-cta-primary, #E6B800) 0%, var(--bg-cta-primary-hover, #CC9F00) 100%);
-  border-radius: 0 4px 4px 0;
-  box-shadow: 0 2px 8px rgba(230, 184, 0, 0.4);
+  width: 6px;
+  height: 32px;
+  background: linear-gradient(180deg, #E6B800 0%, #CC9F00 100%);
+  border-radius: 0 6px 6px 0;
+  box-shadow: 0 4px 16px rgba(230, 184, 0, 0.6);
 }
 
 
@@ -171,7 +171,7 @@ const handleClick = () => {
 
 .nav-icon-wrapper i {
   font-size: 18px;
-  color: var(--text-secondary, #6B7280);
+  color: var(--text-secondary, #52525B);
   transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
   font-weight: 400;
   line-height: 1;
@@ -231,7 +231,7 @@ const handleClick = () => {
 
 .nav-description {
   font-size: 12px;
-  color: var(--text-secondary, #6B7280);
+  color: var(--text-secondary, #52525B);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;

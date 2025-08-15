@@ -137,7 +137,7 @@ export function createDebouncedFunction<T extends (...args: any[]) => any>(
   func: T,
   delay: number = 300
 ): (...args: Parameters<T>) => void {
-  let timeoutId: number | null = null
+  let timeoutId: ReturnType<typeof setTimeout> | null = null
   
   return (...args: Parameters<T>) => {
     if (timeoutId) {
@@ -157,7 +157,7 @@ export class MemoryMonitor {
   private checkInterval: number
   private threshold: number
   private onThresholdExceeded?: () => void
-  private intervalId?: number
+  private intervalId?: ReturnType<typeof setInterval>
   
   constructor(
     checkInterval = 5000, // 5 seconds

@@ -16,8 +16,12 @@
       Skip to navigation
     </a>
     
-    <!-- Vertical Sidebar Navigation -->
-    <VerticalSidebar />
+    <!-- New Sidebar Navigation -->
+    <SideNav
+      :is-collapsed="sidebarCollapsed"
+      :active="activeNavId"
+      @toggle="toggleSidebar"
+    />
     
     <!-- Mobile Menu Toggle (hidden on desktop) -->
     <button
@@ -83,14 +87,14 @@
 <script>
 import { ref, computed, getCurrentInstance, onMounted, onUnmounted } from 'vue'
 import { useAppStore } from '@/stores/app'
-import VerticalSidebar from '../navigation/VerticalSidebar.vue'
+import SideNav from '../nav/SideNav.vue'
 import AppHeader from '../AppHeader.vue'
 import AppFooter from '../AppFooter.vue'
 
 export default {
   name: 'AppLayout',
   components: {
-    VerticalSidebar,
+    SideNav,
     AppHeader,
     AppFooter
   },
@@ -116,13 +120,26 @@ export default {
     const mainContent = ref(null)
     const announcementRegion = ref(null)
     const isMobile = ref(false)
+    const sidebarCollapsed = ref(false)
     
     // Store
     const appStore = useAppStore()
     
     // Computed
-    const sidebarExpanded = computed(() => appStore.sidebarExpanded)
+    const sidebarExpanded = computed(() => !sidebarCollapsed.value)
     const mobileMenuOpen = computed(() => appStore.mobileMenuOpen)
+    
+    // Map current navigation to active nav ID
+    const activeNavId = computed(() => {
+      const nav = appStore.currentNavigation
+      if (nav === 'manual-builder') return 'manual'
+      if (nav === 'document-processing') return 'process'
+      if (nav === 'versions') return 'versions'
+      if (nav === 'settings') return 'settings'
+      if (nav === 'home') return 'home'
+      // Default to home if no match
+      return 'home'
+    })
     
     // Set document title if provided
     if (props.title) {
@@ -157,6 +174,10 @@ export default {
     // Methods
     const toggleMobileMenu = () => {
       appStore.toggleMobileMenu()
+    }
+    
+    const toggleSidebar = () => {
+      sidebarCollapsed.value = !sidebarCollapsed.value
     }
     
     // Accessibility functions
@@ -216,16 +237,19 @@ export default {
       mainContent,
       announcementRegion,
       isMobile,
+      sidebarCollapsed,
       
       // Computed
       sidebarExpanded,
       mobileMenuOpen,
+      activeNavId,
       
       // Methods
       focusMainContent,
       focusNavigation,
       announceToScreenReader,
-      toggleMobileMenu
+      toggleMobileMenu,
+      toggleSidebar
     }
   }
 }
@@ -252,19 +276,19 @@ export default {
 
 /* Desktop - Sidebar Expanded */
 .sidebar-expanded .main-wrapper {
-  margin-left: 280px;
+  margin-left: 224px;
 }
 
 /* Desktop - Sidebar Collapsed */
 .sidebar-collapsed .main-wrapper {
-  margin-left: 72px;
+  margin-left: 84px;
 }
 
 /* ===== MAIN CONTENT ===== */
 
 .main-content {
   flex: 1;
-  padding: var(--space-8) var(--space-6);
+  padding: var(--space-6) var(--space-4);
   max-width: 100%;
   overflow-x: hidden;
 }
@@ -393,7 +417,7 @@ export default {
 @media (min-width: 768px) and (max-width: 1023px) {
   .sidebar-expanded .main-wrapper,
   .sidebar-collapsed .main-wrapper {
-    margin-left: 72px;
+    margin-left: 84px;
   }
   
   .main-content {

@@ -190,7 +190,7 @@ export const useDocumentAnalyzer = () => {
    * Analyze content complexity
    */
   const analyzeContentComplexity = (content: string): ContentComplexity => {
-    const words = content.toLowerCase().match(/\b\w+\b/g) || []
+    const words: string[] = content.toLowerCase().match(/\b\w+\b/g) || []
     const sentences = content.split(/[.!?]+/).filter(s => s.trim().length > 0)
     const paragraphs = content.split('\n\n').filter(p => p.trim().length > 0)
     
@@ -218,7 +218,7 @@ export const useDocumentAnalyzer = () => {
     
     // Simple readability score (Flesch-Kincaid approximation)
     const avgWordsPerSent = averageWordsPerSentence
-    const avgSyllables = words.reduce((sum, word) => sum + estimateSyllables(word), 0) / wordCount
+    const avgSyllables = wordCount > 0 ? words.reduce((sum: number, word: string) => sum + estimateSyllables(word), 0) / wordCount : 0
     const readabilityScore = 206.835 - (1.015 * avgWordsPerSent) - (84.6 * avgSyllables)
     
     // Determine complexity level

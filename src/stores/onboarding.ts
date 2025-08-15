@@ -252,9 +252,9 @@ export const useOnboardingStore = defineStore('onboarding', () => {
   // Analytics helpers
   const getTourAnalytics = () => {
     const totalDuration = Object.values(state.value.stepDurations)
-      .reduce((sum, duration) => sum + duration, 0)
+      .reduce((sum: number, duration) => sum + (duration as number), 0)
     
-    const avgStepDuration = totalDuration / state.value.completedSteps.length || 0
+    const avgStepDuration = state.value.completedSteps.length > 0 ? (totalDuration as number) / state.value.completedSteps.length : 0
     
     return {
       completionRate: tourProgress.value,
@@ -263,7 +263,7 @@ export const useOnboardingStore = defineStore('onboarding', () => {
       avgStepDuration,
       completedSteps: state.value.completedSteps.length,
       mostUsedSamples: Object.entries(state.value.sampleUsage)
-        .sort(([,a], [,b]) => b - a)
+        .sort(([,a], [,b]) => (b as number) - (a as number))
         .slice(0, 3)
         .map(([id]) => id),
       preferredSamples: state.value.preferredSamples,

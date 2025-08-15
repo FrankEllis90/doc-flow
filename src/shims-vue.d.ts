@@ -1,7 +1,14 @@
 declare module '*.vue' {
   import type { DefineComponent } from 'vue'
-  const component: DefineComponent<{}, {}, any>
+  const component: DefineComponent<Record<string, any>, Record<string, any>, any>
   export default component
+}
+
+// Ensure Vue 3 types are properly exported
+declare module 'vue' {
+  export * from '@vue/runtime-core'
+  export * from '@vue/reactivity'
+  export * from '@vue/runtime-dom'
 }
 
 declare module '*.md' {

@@ -277,6 +277,14 @@
   --text-cta-primary: #FFFFFF;                    /* White text on gold */
   --bg-dark: var(--color-neutral-800);  /* Not pure black */
   
+  /* Enhanced Brand Colors for Polished UI */
+  --brand-sage-600: var(--color-primary-600);    /* #8CA085 - Primary actions */
+  --brand-sage-700: var(--color-primary-700);    /* #738A6C - Primary pressed */
+  --brand-sage-800: var(--color-primary-800);    /* #5A7354 - High contrast */
+  --brand-sage-900: var(--color-primary-900);    /* #415D3C - Maximum contrast */
+  --brand-gold-600: var(--color-accent-500);     /* #E6B800 - Enhanced gold CTAs */
+  --brand-gold-700: var(--color-accent-600);     /* #CC9F00 - Enhanced gold hover */
+  
   /* Text Colors - Consistent with Typography System */
   --text-primary: #1F2937;
   --text-secondary: #6B7280;
@@ -344,5 +352,359 @@
     --transition-fast: 0ms;
     --transition-base: 0ms;
     --transition-slow: 0ms;
+  }
+}
+
+/* ===== UTILITY CLASSES FOR POLISHED UI ===== */
+
+/* Button System - Vibrant & Engaging */
+.btn {
+  @apply inline-flex items-center justify-center rounded-xl px-4 py-3 text-sm font-semibold transition-all duration-200 ease-in-out;
+  @apply focus:outline-none focus:ring-2 focus:ring-offset-2 active:scale-[0.98];
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, #10B981 0%, #059669 100%);  /* Vibrant emerald gradient */
+  color: white;
+  box-shadow: 0 4px 14px rgba(16, 185, 129, 0.4);
+  @apply hover:shadow-lg;
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(16, 185, 129, 0.5);
+}
+
+.btn-primary:focus {
+  @apply ring-emerald-500/50;
+}
+
+.btn-primary::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle, rgba(255,255,255,0.3) 0%, transparent 70%);
+  transform: translate(-50%, -50%) scale(0);
+  transition: transform 0.5s ease;
+}
+
+.btn-primary:hover::before {
+  transform: translate(-50%, -50%) scale(1.5);
+}
+
+.btn-secondary {
+  background: linear-gradient(135deg, #0EA5E9 0%, #0284C7 100%);  /* Ocean blue gradient */
+  color: #FFFFFF !important;  /* Force white text for maximum contrast */
+  box-shadow: 0 4px 14px rgba(14, 165, 233, 0.3);
+}
+
+.btn-secondary:hover {
+  background: linear-gradient(135deg, #0284C7 0%, #0369A1 100%);  /* Darker on hover */
+  color: #FFFFFF !important;  /* Keep white text on hover */
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(14, 165, 233, 0.4);
+}
+
+.btn-secondary:focus {
+  @apply ring-sky-500/50;
+}
+
+.btn-ghost {
+  background: white;
+  color: #374151;
+  border: 2px solid #E5E7EB;
+  @apply hover:bg-gray-50 hover:border-gray-300;
+}
+
+.btn-ghost:hover {
+  transform: translateY(-1px);
+}
+
+.btn-ghost:focus {
+  @apply ring-gray-400/50;
+}
+
+/* Badge System */
+.badge {
+  @apply inline-flex items-center rounded-full px-2.5 py-1 text-xs font-medium;
+  background: var(--color-neutral-100);
+  color: var(--text-secondary);
+}
+
+.badge-soft {
+  background: rgba(168, 183, 157, 0.1);
+  color: var(--brand-sage-900);
+}
+
+/* Shadow System - 2-Tier Only for Consistency */
+.shadow-elev-1 {
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+}
+
+.shadow-elev-2 {
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+}
+
+/* Container System */
+.container {
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+}
+
+@media (min-width: 640px) {
+  .container {
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .container {
+    padding-left: 2.5rem;
+    padding-right: 2.5rem;
+  }
+}
+
+/* Step Component */
+.step {
+  @apply text-sm text-neutral-700;
+}
+
+/* Icon Utilities */
+.icon-brand {
+  color: var(--brand-sage-700);
+}
+
+.icon-accent {
+  color: var(--brand-gold-600);
+}
+
+/* KPI System - Informative Empty States */
+.kpi {
+  @apply rounded-2xl bg-white ring-1 ring-neutral-100 shadow-elev-1 p-6 flex items-center gap-4;
+}
+
+.kpi__icon {
+  @apply text-brand-sage-700 text-xl;
+}
+
+.kpi__label {
+  @apply text-neutral-500 text-xs;
+}
+
+.kpi__value {
+  @apply text-2xl font-bold text-neutral-900 mt-1;
+}
+
+.kpi__hint {
+  @apply text-[11px] text-neutral-500 mt-1;
+}
+
+/* Tip Row System - Interactive & Informative */
+.tip-row {
+  @apply flex items-center gap-3 px-4 py-3 text-sm text-neutral-800 hover:bg-neutral-50 rounded-lg transition-colors;
+}
+
+.tip-row .tip-icon {
+  @apply text-brand-gold-600 text-sm;
+}
+
+/* Grid System - 12 Column */
+.grid-12 {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 1.5rem;
+}
+
+@media (min-width: 1024px) {
+  .grid-12 {
+    gap: 2rem;
+  }
+}
+
+/* ===== SIDEBAR NAVIGATION UTILITIES ===== */
+
+/* Sidebar container utilities */
+.sidebar {
+  @apply bg-white/90 backdrop-blur sticky top-0 h-screen border-r border-neutral-100;
+  @apply transition-[width] duration-200 ease-out;
+}
+
+.sidebar--expanded {
+  width: 264px;
+}
+
+.sidebar--collapsed {
+  width: 84px;
+}
+
+/* Navigation animations */
+@keyframes nav-slide-in {
+  from {
+    opacity: 0;
+    transform: translateX(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes nav-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes nav-scale-in {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.nav-animate-in {
+  animation: nav-slide-in 0.3s ease-out;
+}
+
+.nav-fade-in {
+  animation: nav-fade-in 0.2s ease-out;
+}
+
+.nav-scale-in {
+  animation: nav-scale-in 0.2s ease-out;
+}
+
+/* Custom scrollbar for navigation */
+.nav-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: #e5e7eb transparent;
+}
+
+.nav-scroll::-webkit-scrollbar {
+  width: 8px;
+}
+
+.nav-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.nav-scroll::-webkit-scrollbar-thumb {
+  background: #e5e7eb;
+  border-radius: 8px;
+}
+
+.nav-scroll::-webkit-scrollbar-thumb:hover {
+  background: #d1d5db;
+}
+
+/* Navigation item utilities */
+.nav-item-base {
+  @apply w-full flex items-center gap-3 px-3 py-3 rounded-xl transition-all duration-200 ease-out;
+  @apply text-neutral-600 hover:text-neutral-900 hover:bg-white/80;
+  @apply focus:outline-none focus:ring-2 focus:ring-brand-gold-600 focus:ring-offset-2;
+  @apply relative overflow-hidden;
+  height: 46px;
+  border-radius: 12px;
+  
+  /* Subtle ring for elevated feeling */
+  @apply ring-1 ring-transparent hover:ring-neutral-200/50;
+}
+
+.nav-item-active {
+  @apply bg-gradient-to-r from-brand-sage-700 to-brand-sage-600 text-white;
+  @apply shadow-lg;
+  box-shadow: 0 4px 12px rgba(115, 138, 108, 0.3);
+}
+
+.nav-item-collapsed {
+  @apply justify-center px-2;
+  min-width: 52px;
+}
+
+/* Navigation section utilities */
+.nav-section-label {
+  @apply text-xs font-semibold text-neutral-400 uppercase tracking-wider px-3 py-2 block;
+}
+
+.nav-section-spacing {
+  @apply mb-6;
+}
+
+.nav-section-spacing--collapsed {
+  @apply mb-4;
+}
+
+/* Badge utilities for navigation */
+.nav-badge {
+  @apply inline-flex items-center justify-center min-w-[20px] h-5 px-1.5 rounded-full;
+  @apply bg-brand-gold-600 text-white text-xs font-bold;
+  @apply flex-shrink-0 ml-2;
+}
+
+.nav-badge--active {
+  @apply bg-white text-brand-sage-700;
+}
+
+/* Tooltip utilities */
+.nav-tooltip {
+  @apply absolute left-full top-1/2 transform -translate-y-1/2 ml-3;
+  @apply bg-neutral-800 text-white text-sm font-medium px-3 py-2 rounded-lg;
+  @apply shadow-lg z-50 whitespace-nowrap;
+  @apply pointer-events-none;
+}
+
+.nav-tooltip::before {
+  content: '';
+  @apply absolute right-full top-1/2 transform -translate-y-1/2;
+  @apply border-4 border-transparent border-r-neutral-800;
+}
+
+/* License card utilities */
+.license-card-gradient {
+  @apply bg-gradient-to-br from-amber-50 to-orange-50;
+  @apply ring-1 ring-amber-200/50;
+}
+
+/* Responsive navigation utilities */
+@media (max-width: 768px) {
+  .sidebar {
+    @apply fixed inset-y-0 left-0 z-50;
+    @apply transform transition-transform duration-300 ease-in-out;
+  }
+  
+  .sidebar--mobile-hidden {
+    @apply -translate-x-full;
+  }
+  
+  .sidebar--mobile-visible {
+    @apply translate-x-0;
+  }
+}
+
+/* Dark mode preparations (for future implementation) */
+@media (prefers-color-scheme: dark) {
+  .sidebar {
+    @apply bg-neutral-900/90;
+    @apply border-neutral-800;
+  }
+  
+  .nav-item-base {
+    @apply text-neutral-300 hover:text-white hover:bg-neutral-800/80;
+  }
+  
+  .nav-tooltip {
+    @apply bg-neutral-700;
   }
 }

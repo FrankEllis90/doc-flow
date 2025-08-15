@@ -1,0 +1,40 @@
+{
+  "timestamp": "2025-08-15T10:45:27.530Z",
+  "categories": [
+    {
+      "name": "TypeScript Type Checking",
+      "status": "FAIL",
+      "duration": 0,
+      "details": "TypeScript compilation errors detected"
+    },
+    {
+      "name": "Component Structure Validation",
+      "status": "PASS",
+      "duration": 17,
+      "details": "All 7 required components exist"
+    },
+    {
+      "name": "Production Build",
+      "status": "FAIL",
+      "duration": 0,
+      "details": "Build failed: Command failed: npm run build"
+    },
+    {
+      "name": "Code Quality",
+      "status": "PASS",
+      "duration": 19,
+      "details": "4/4 quality checks passed (100.0%)"
+    }
+  ],
+  "overallScore": 50,
+  "recommendations": [
+    "Overall score below production threshold (85%)",
+    "Test in multiple browsers before deployment",
+    "Monitor application performance in production",
+    "Set up error tracking and logging"
+  ],
+  "criticalIssues": [
+    "TypeScript compilation errors must be fixed",
+    "Production build fails - cannot deploy"
+  ]
+}

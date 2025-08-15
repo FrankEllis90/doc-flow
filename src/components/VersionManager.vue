@@ -44,6 +44,14 @@
           </svg>
           <p>No saved versions yet</p>
           <p class="text-xs">Versions will be automatically saved when you export</p>
+          
+          <!-- Debug: Add a test button -->
+          <button 
+            @click="createTestVersion" 
+            class="mt-4 px-4 py-2 bg-blue-500 text-white rounded text-sm"
+          >
+            🐛 Create Test Version (Debug)
+          </button>
         </div>
         
         <div
@@ -300,7 +308,7 @@
 </template>
 
 <script>
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useVersionStore } from '../stores/versions.ts'
 import { useContentStore } from '../stores/content.ts'
 import { useAppStore } from '../stores/app.ts'
@@ -321,6 +329,10 @@ export default {
     const versionToDelete = ref(null)
     const isDeleting = ref(false) // Prevent multiple delete operations
     
+    // Ensure versions are reactive
+    const versions = computed(() => versionStore.versions)
+    const currentVersion = computed(() => versionStore.currentVersion)
+    
     const currentVersionInfo = computed(() => {
       if (versionStore.currentVersion) {
         if (versionStore.currentVersion.isAutoSave) {
@@ -334,6 +346,12 @@ export default {
     
     const canSaveCurrent = computed(() => {
       return versionStore.currentVersion && !versionStore.currentVersion.isAutoSave
+    })
+    
+    // Load versions on component mount
+    onMounted(async () => {
+      await versionStore.loadVersionsFromStorage()
+      console.log('VersionManager loaded versions:', versionStore.versions.length)
     })
     
     const toggleExpanded = () => {
@@ -541,6 +559,46 @@ export default {
       return `${date.toLocaleDateString()} ${date.toLocaleTimeString()}`
     }
     
+    // Debug function to test version creation
+    const createTestVersion = async () => {
+      try {
+        console.log('Creating test version...')
+        const testChunks = [{
+          chunk_id: `test_${Date.now()}`,
+          content: 'This is a test draft created for debugging purposes.',
+          tags: ['test', 'debug'],
+          source: 'Debug Test',
+          word_count: 10,
+          metadata: {
+            is_draft: true,
+            created_at: new Date().toISOString()
+          }
+        }]
+        
+        const savedVersion = await versionStore.saveVersion(
+          { chunks: testChunks },
+          `Debug Test - ${new Date().toLocaleString()}`,
+          false
+        )
+        
+        console.log('Test version created:', savedVersion)
+        console.log('Total versions now:', versionStore.versions.length)
+        
+        emit('show-notification', {
+          type: 'success',
+          title: 'Debug Test',
+          message: `Test version created: ${savedVersion.name}`
+        })
+      } catch (error) {
+        console.error('Error creating test version:', error)
+        emit('show-notification', {
+          type: 'error',
+          title: 'Debug Error',
+          message: `Failed to create test version: ${error.message}`
+        })
+      }
+    }
+    
     const formatPreviewJson = (version) => {
       if (!version) {
         return JSON.stringify({ error: 'No version data available' }, null, 2)
@@ -628,6 +686,7 @@ export default {
       handleDeleteConfirm,
       handleDeleteCancel,
       formatDate,
+      createTestVersion,
       formatPreviewJson,
       autoSaveVersion
     }

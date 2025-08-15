@@ -83,7 +83,7 @@ export const useTimeoutManager = () => {
     for (const [size, config] of Object.entries(defaultTimeouts)) {
       result[size as keyof TimeoutSettings] = {} as TimeoutConfig
       for (const [operation, timeout] of Object.entries(config)) {
-        result[size as keyof TimeoutSettings][operation as keyof TimeoutConfig] = Math.round(timeout * multiplier)
+        result[size as keyof TimeoutSettings][operation as keyof TimeoutConfig] = Math.round((timeout as number) * multiplier)
       }
     }
     
@@ -221,8 +221,7 @@ export const useTimeoutManager = () => {
           throw new Error(`Processing timeout: ${error.message}${context ? ` (Size: ${(context.fileSize / 1024 / 1024).toFixed(1)}MB, Duration: ${timeout/1000}s)` : ''}`)
         }, { 
           component: 'TimeoutManager', 
-          action: config.operationType,
-          severity: 'medium'
+          action: config.operationType
         })
       }
       

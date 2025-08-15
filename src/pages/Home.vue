@@ -1,312 +1,373 @@
 <template>
   <div class="home-page">
-    <!-- Hero Section -->
-    <section class="hero-section">
-      <div class="hero-content">
-        <div class="welcome-header">
-          <div class="hero-badge">
-            <i class="fas fa-rocket"></i>
-            <span>Enterprise AI Platform</span>
-          </div>
-          <h1 class="hero-title">
-            Welcome to <span class="brand-highlight">Doc Layer</span>
-          </h1>
-          <p class="hero-subtitle">
-            Transform your documents into AI-ready knowledge bases with enterprise-grade processing
-          </p>
+    <!-- Page container with vibrant design -->
+    <section class="container mx-auto px-4 lg:px-6 2xl:px-8 py-6 lg:py-8">
+      <div class="grid grid-cols-12 gap-4 lg:gap-6">
+        
+        <!-- HERO SECTION - Gold Wave Background -->
+        <article class="col-span-12 lg:col-span-7 rounded-2xl shadow-2xl relative overflow-hidden hero-container">
+          <!-- Animated gradient border -->
+          <div class="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-amber-500 via-yellow-500 to-emerald-500 animate-gradient z-20"></div>
           
-          <!-- Primary CTA - Above the fold -->
-          <div class="hero-cta-section">
-            <button @click="navigateTo('manual-builder')" class="hero-primary-cta">
-              <div class="cta-content">
-                <i class="fas fa-play"></i>
-                <span class="cta-text">Start Building Now</span>
-                <span class="cta-subtitle">Create your first AI-ready dataset</span>
+          <!-- Gold Wave Background with CSS -->
+          <div class="hero-wave-background"></div>
+          
+          <!-- White Overlay for Text Readability (using ::before pseudo-element in CSS) -->
+          
+          <!-- Floating accent orbs for depth -->
+          <div class="absolute top-10 right-10 w-32 h-32 rounded-full bg-gradient-to-br from-amber-400/20 to-yellow-400/20 blur-2xl animate-float"></div>
+          <div class="absolute bottom-10 left-10 w-40 h-40 rounded-full bg-gradient-to-tr from-emerald-400/15 to-cyan-400/15 blur-2xl animate-float-delayed"></div>
+          
+          <div class="relative p-8 z-10">
+            <!-- Status badges with colors -->
+            <div class="flex items-center gap-3 text-sm mb-6">
+              <span class="badge bg-gradient-to-r from-emerald-500 to-emerald-600 text-white">
+                <i class="fas fa-rocket mr-1"></i>
+                Enterprise AI Platform
+              </span>
+              <span v-if="hasActivity" class="badge bg-gradient-to-r from-sky-500 to-sky-600 text-white animate-pulse">
+                <i class="fas fa-check-circle mr-1"></i>
+                AI Ready
+              </span>
+              <span v-else class="badge bg-gradient-to-r from-amber-500 to-orange-500 text-white">
+                <i class="fas fa-cog mr-1 animate-spin-slow"></i>
+                Getting Started
+              </span>
+            </div>
+
+            <!-- Enhanced hero title with stronger contrast -->
+            <h1 class="text-5xl lg:text-6xl font-black text-gray-900 mb-3 animate-fade-in drop-shadow-sm">
+              Welcome to <span class="bg-gradient-to-r from-emerald-600 to-cyan-600 bg-clip-text text-transparent">Doc Layer</span>
+            </h1>
+
+            <p class="text-lg text-gray-800 max-w-[60ch] mb-7 font-medium">
+              Transform your documents into <span class="font-bold text-emerald-700">AI-ready knowledge bases</span> with enterprise-grade processing.
+            </p>
+
+            <!-- High-contrast CTAs -->
+            <div class="flex flex-col sm:flex-row gap-3">
+              <button @click="navigateTo('manual-builder')" class="btn-hero-primary group">
+                <i class="fas fa-play mr-2 group-hover:animate-bounce"></i>
+                Start Building Now
+              </button>
+              <button @click="navigateTo('document-processing')" class="btn-hero-secondary">
+                <i class="fas fa-upload mr-2"></i>
+                Upload Documents
+              </button>
+            </div>
+          </div>
+        </article>
+
+        <!-- QUICK TIPS - Filled with Actionable Content -->
+        <aside class="col-span-12 lg:col-span-5 rounded-2xl bg-gradient-to-br from-white to-sky-50 ring-1 ring-gray-100 shadow-lg">
+          <header class="px-6 pt-6 pb-4 border-b border-sky-100">
+            <h2 class="text-lg font-bold text-gray-900 flex items-center gap-2">
+              <span class="w-8 h-8 bg-gradient-to-br from-amber-400 to-orange-500 rounded-lg flex items-center justify-center">
+                <i class="fas fa-lightbulb text-white text-sm"></i>
+              </span>
+              Pro Tips
+            </h2>
+          </header>
+          
+          <!-- Rich tip content -->
+          <div class="p-4 space-y-3">
+            <div class="tip-card group">
+              <div class="tip-icon bg-emerald-100 text-emerald-600">
+                <i class="fas fa-rocket"></i>
               </div>
-              <div class="cta-glow"></div>
+              <div class="flex-1">
+                <h4 class="font-semibold text-gray-900">Optimal Chunk Size</h4>
+                <p class="text-xs text-gray-600 mt-0.5">500-800 words works best for GPT-4 and Claude</p>
+                <a href="#" class="text-xs text-emerald-600 hover:text-emerald-700 font-medium mt-1 inline-block">Learn why →</a>
+              </div>
+            </div>
+            
+            <div class="tip-card group">
+              <div class="tip-icon bg-sky-100 text-sky-600">
+                <i class="fas fa-link"></i>
+              </div>
+              <div class="flex-1">
+                <h4 class="font-semibold text-gray-900">Smart Overlap</h4>
+                <p class="text-xs text-gray-600 mt-0.5">15% overlap preserves context without redundancy</p>
+                <a href="#" class="text-xs text-sky-600 hover:text-sky-700 font-medium mt-1 inline-block">See example →</a>
+              </div>
+            </div>
+            
+            <div class="tip-card group">
+              <div class="tip-icon bg-purple-100 text-purple-600">
+                <i class="fas fa-magic"></i>
+              </div>
+              <div class="flex-1">
+                <h4 class="font-semibold text-gray-900">Auto-Enhancement</h4>
+                <p class="text-xs text-gray-600 mt-0.5">AI tags & metadata boost retrieval by 40%</p>
+                <a href="#" class="text-xs text-purple-600 hover:text-purple-700 font-medium mt-1 inline-block">Enable now →</a>
+              </div>
+            </div>
+          </div>
+          
+          <!-- CTA footer -->
+          <div class="px-6 pb-6">
+            <button @click="navigateTo('manual-builder')" class="btn btn-secondary w-full group">
+              <i class="fas fa-sparkles mr-2 group-hover:animate-pulse"></i>
+              Start Learning
             </button>
-            <button @click="navigateTo('document-processing')" class="hero-secondary-cta">
-              <i class="fas fa-upload"></i>
-              <span>Upload Documents</span>
-            </button>
           </div>
-        </div>
-        
-        <!-- Quick Actions -->
-        <div class="quick-actions">
-          <FeatureCard
-            title="Manual Content Builder"
-            description="Create and chunk content manually with full control"
-            icon="fas fa-pencil-alt"
-            :features="['Real-time preview', 'Custom chunking', 'Quality analysis']"
-            action-text="Start Building"
-            :interactive="true"
-            :highlighted="true"
-            @click="navigateTo('manual-builder')"
-          />
-          
-          <FeatureCard
-            title="Document Processing"
-            description="Process PDF, Markdown, and text files in batch"
-            icon="fas fa-file-alt"
-            :features="['Batch processing', 'Multiple formats', 'Auto-chunking']"
-            action-text="Process Files"
-            :interactive="true"
-            @click="navigateTo('document-processing')"
-          />
-        </div>
-      </div>
-      
-      <!-- Contextual Help Panel -->
-      <div class="contextual-help-panel">
-        <div class="help-panel-header">
-          <h3 class="help-panel-title">
-            <i class="fas fa-lightbulb"></i>
-            Quick Tips
-          </h3>
-          <span class="help-panel-badge">AI Powered</span>
-        </div>
-        
-        <div class="help-tips-list">
-          <div class="help-tip">
-            <div class="tip-icon">
-              <i class="fas fa-rocket"></i>
-            </div>
-            <div class="tip-content">
-              <h4>Start with 500-word chunks</h4>
-              <p>This size works best for most AI models and vector databases</p>
-            </div>
-          </div>
-          
-          <div class="help-tip">
-            <div class="tip-icon">
-              <i class="fas fa-overlap"></i>
-            </div>
-            <div class="tip-content">
-              <h4>Use 10-20% overlap</h4>
-              <p>Prevents important information from being split between chunks</p>
-            </div>
-          </div>
-          
-          <div class="help-tip">
-            <div class="tip-icon">
-              <i class="fas fa-tags"></i>
-            </div>
-            <div class="tip-content">
-              <h4>Enable auto-tagging</h4>
-              <p>Improves searchability and organization in vector stores</p>
-            </div>
-          </div>
-          
-          <div class="help-tip">
-            <div class="tip-icon">
-              <i class="fas fa-chart-line"></i>
-            </div>
-            <div class="tip-content">
-              <h4>Check quality scores</h4>
-              <p>Ensure high readability before exporting to AI platforms</p>
-            </div>
-          </div>
-        </div>
-        
-        <div class="help-panel-footer">
-          <button class="help-action-btn" @click="navigateTo('manual-builder')">
-            <i class="fas fa-play"></i>
-            Get Started
-          </button>
-        </div>
-      </div>
-    </section>
+        </aside>
 
-    <!-- Stats Section -->
-    <section class="stats-section">
-      <div class="stats-grid">
-        <StatsCard
-          :value="stats.documentsProcessed"
-          label="Documents Processed"
-          icon="fas fa-file-alt"
-          :interactive="true"
-          empty-state-message="No documents processed yet — upload your first file to see insights here"
-          empty-state-action="Upload Files"
-          @click="navigateTo('document-processing')"
-          @empty-action="navigateTo('document-processing')"
-        />
-        
-        <StatsCard
-          :value="stats.totalChunks"
-          label="Chunks Created"
-          icon="fas fa-cube"
-          :interactive="true"
-          empty-state-message="No content chunks created — start building to see your progress"
-          empty-state-action="Start Building"
-          @click="navigateTo('manual-builder')"
-          @empty-action="navigateTo('manual-builder')"
-        />
-        
-        <StatsCard
-          :value="stats.versionsCount"
-          label="Saved Versions"
-          icon="fas fa-code-branch"
-          :interactive="true"
-          empty-state-message="No versions saved yet — create your first dataset to track changes"
-          empty-state-action="Create Dataset"
-          @click="navigateTo('versions')"
-          @empty-action="navigateTo('manual-builder')"
-        />
-        
-        <StatsCard
-          :value="stats.exportsCount"
-          label="Exports Generated"
-          icon="fas fa-download"
-          :interactive="true"
-          empty-state-message="No exports created — process content to generate AI-ready datasets"
-          empty-state-action="Get Started"
-          @empty-action="navigateTo('manual-builder')"
-        />
-      </div>
-    </section>
+        <!-- ENHANCED METRICS - Colorful with Progress Indicators -->
+        <section class="col-span-12">
+          <div class="grid grid-cols-12 gap-4">
+            <!-- Documents Metric -->
+            <div class="col-span-12 sm:col-span-6 lg:col-span-3 metric-card group" @click="navigateTo('document-processing')">
+              <div class="metric-header">
+                <div class="metric-icon bg-gradient-to-br from-emerald-400 to-emerald-600">
+                  <i class="fas fa-file-alt text-white"></i>
+                </div>
+                <div class="metric-progress">
+                  <svg class="w-full h-full -rotate-90">
+                    <circle cx="20" cy="20" r="18" stroke="#E5E7EB" stroke-width="3" fill="none"/>
+                    <circle cx="20" cy="20" r="18" stroke="url(#emerald-gradient)" stroke-width="3" fill="none"
+                            :stroke-dasharray="`${stats.documentsProcessed > 0 ? 113 : 0} 113`"
+                            stroke-linecap="round"/>
+                    <defs>
+                      <linearGradient id="emerald-gradient">
+                        <stop offset="0%" stop-color="#34D399"/>
+                        <stop offset="100%" stop-color="#10B981"/>
+                      </linearGradient>
+                    </defs>
+                  </svg>
+                </div>
+              </div>
+              <div class="metric-content">
+                <p class="metric-label">Documents</p>
+                <p class="metric-value" :class="{'animate-count': stats.documentsProcessed > 0}">
+                  {{ stats.documentsProcessed }}
+                </p>
+                <p class="metric-hint">{{ stats.documentsProcessed > 0 ? 'View all →' : 'Upload first file' }}</p>
+              </div>
+            </div>
 
-    <!-- Features Section -->
-    <section class="features-section">
-      <h2 class="section-title">Platform Features</h2>
-      <div class="features-grid">
-        <div class="feature-card feature-card--primary">
-          <div class="feature-icon sage">
-            <i class="fas fa-brain"></i>
-          </div>
-          <div class="feature-title-section">
-            <h3>AI-Optimized Chunking</h3>
-            <HelpTooltip
-              content="Chunking breaks documents into smaller pieces that AI models can process effectively. Our algorithm uses semantic boundaries, optimal size limits (300-800 words), and configurable overlap to ensure no information is lost between chunks. This maximizes retrieval accuracy in vector databases."
-              title="Text Chunking for AI"
-              position="bottom"
-              theme="brand"
-              :show-learn-more="true"
-              learn-more-url="https://docs.pinecone.io/guides/data/understanding-hybrid-search"
-            />
-          </div>
-          <p>Intelligent text segmentation designed for vector databases and LLM training</p>
-          <div class="feature-priority-badge">Most Used</div>
-        </div>
-        
-        <div class="feature-card">
-          <div class="feature-icon gold">
-            <i class="fas fa-chart-line"></i>
-          </div>
-          <div class="feature-title-section">
-            <h3>Quality Analysis</h3>
-            <HelpTooltip
-              content="Analyzes text quality using readability metrics (Flesch-Kincaid, SMOG, ARI), semantic coherence, and information density. This ensures your content meets standards for AI training and provides actionable suggestions for improvement before export."
-              title="Quality Metrics Explained"
-              position="bottom"
-              theme="brand"
-              :show-learn-more="true"
-              learn-more-url="https://en.wikipedia.org/wiki/Flesch%E2%80%93Kincaid_readability_tests"
-            />
-          </div>
-          <p>Real-time readability scoring and semantic coherence evaluation</p>
-        </div>
-        
-        <div class="feature-card feature-card--primary">
-          <div class="feature-icon sage">
-            <i class="fas fa-share-alt"></i>
-          </div>
-          <div class="feature-title-section">
-            <h3>Multi-Platform Export</h3>
-            <HelpTooltip
-              content="Exports data in formats optimized for specific AI platforms. Azure Vector Store uses JSON with embeddings metadata, OpenAI fine-tuning requires JSONL format, while Pinecone and ChromaDB have their own vector database schemas. Each format includes the necessary metadata for optimal performance."
-              title="Export Format Compatibility"
-              position="bottom"
-              theme="brand"
-            />
-          </div>
-          <p>Support for Azure, OpenAI, Pinecone, ChromaDB, and more</p>
-          <div class="feature-priority-badge">Essential</div>
-        </div>
-        
-        <div class="feature-card">
-          <div class="feature-icon gold">
-            <i class="fas fa-shield-alt"></i>
-          </div>
-          <h3>Privacy-First</h3>
-          <p>100% local processing with enterprise-grade security</p>
-        </div>
-        
-        <div class="feature-card">
-          <div class="feature-icon sage">
-            <i class="fas fa-history"></i>
-          </div>
-          <h3>Version Control</h3>
-          <p>Complete history tracking with instant rollback capabilities</p>
-        </div>
-        
-        <div class="feature-card">
-          <div class="feature-icon gold">
-            <i class="fas fa-tachometer-alt"></i>
-          </div>
-          <h3>High Performance</h3>
-          <p>Process thousands of documents with optimized memory management</p>
-        </div>
-      </div>
-    </section>
+            <!-- Chunks Metric -->
+            <div class="col-span-12 sm:col-span-6 lg:col-span-3 metric-card group" @click="navigateTo('manual-builder')">
+              <div class="metric-header">
+                <div class="metric-icon bg-gradient-to-br from-sky-400 to-sky-600">
+                  <i class="fas fa-cube text-white"></i>
+                </div>
+                <div class="metric-progress">
+                  <svg class="w-full h-full -rotate-90">
+                    <circle cx="20" cy="20" r="18" stroke="#E5E7EB" stroke-width="3" fill="none"/>
+                    <circle cx="20" cy="20" r="18" stroke="url(#sky-gradient)" stroke-width="3" fill="none"
+                            :stroke-dasharray="`${stats.totalChunks > 0 ? 113 : 0} 113`"
+                            stroke-linecap="round"/>
+                    <defs>
+                      <linearGradient id="sky-gradient">
+                        <stop offset="0%" stop-color="#38BDF8"/>
+                        <stop offset="100%" stop-color="#0EA5E9"/>
+                      </linearGradient>
+                    </defs>
+                  </svg>
+                </div>
+              </div>
+              <div class="metric-content">
+                <p class="metric-label">Chunks</p>
+                <p class="metric-value" :class="{'animate-count': stats.totalChunks > 0}">
+                  {{ stats.totalChunks }}
+                </p>
+                <p class="metric-hint">{{ stats.totalChunks > 0 ? 'Manage chunks →' : 'Start building' }}</p>
+              </div>
+            </div>
 
-    <!-- Getting Started Section -->
-    <section class="getting-started">
-      <div class="start-card">
-        <h2>Getting Started</h2>
-        <div class="steps">
-          <div class="step">
-            <div class="step-number">1</div>
-            <div class="step-content">
-              <h4>Choose Your Method</h4>
-              <p>Manual content creation or batch document processing</p>
+            <!-- Versions Metric -->
+            <div class="col-span-12 sm:col-span-6 lg:col-span-3 metric-card group" @click="navigateTo('versions')">
+              <div class="metric-header">
+                <div class="metric-icon bg-gradient-to-br from-purple-400 to-purple-600">
+                  <i class="fas fa-code-branch text-white"></i>
+                </div>
+                <div class="metric-progress">
+                  <svg class="w-full h-full -rotate-90">
+                    <circle cx="20" cy="20" r="18" stroke="#E5E7EB" stroke-width="3" fill="none"/>
+                    <circle cx="20" cy="20" r="18" stroke="url(#purple-gradient)" stroke-width="3" fill="none"
+                            :stroke-dasharray="`${stats.versionsCount > 0 ? 113 : 0} 113`"
+                            stroke-linecap="round"/>
+                    <defs>
+                      <linearGradient id="purple-gradient">
+                        <stop offset="0%" stop-color="#C084FC"/>
+                        <stop offset="100%" stop-color="#8B5CF6"/>
+                      </linearGradient>
+                    </defs>
+                  </svg>
+                </div>
+              </div>
+              <div class="metric-content">
+                <p class="metric-label">Versions</p>
+                <p class="metric-value" :class="{'animate-count': stats.versionsCount > 0}">
+                  {{ stats.versionsCount }}
+                </p>
+                <p class="metric-hint">{{ stats.versionsCount > 0 ? 'View history →' : 'Save first version' }}</p>
+              </div>
+            </div>
+
+            <!-- Exports Metric -->
+            <div class="col-span-12 sm:col-span-6 lg:col-span-3 metric-card group">
+              <div class="metric-header">
+                <div class="metric-icon bg-gradient-to-br from-amber-400 to-orange-600">
+                  <i class="fas fa-download text-white"></i>
+                </div>
+                <div class="metric-progress">
+                  <svg class="w-full h-full -rotate-90">
+                    <circle cx="20" cy="20" r="18" stroke="#E5E7EB" stroke-width="3" fill="none"/>
+                    <circle cx="20" cy="20" r="18" stroke="url(#amber-gradient)" stroke-width="3" fill="none"
+                            :stroke-dasharray="`${stats.exportsCount > 0 ? 113 : 0} 113`"
+                            stroke-linecap="round"/>
+                    <defs>
+                      <linearGradient id="amber-gradient">
+                        <stop offset="0%" stop-color="#FBBf24"/>
+                        <stop offset="100%" stop-color="#F97316"/>
+                      </linearGradient>
+                    </defs>
+                  </svg>
+                </div>
+              </div>
+              <div class="metric-content">
+                <p class="metric-label">Exports</p>
+                <p class="metric-value" :class="{'animate-count': stats.exportsCount > 0}">
+                  {{ stats.exportsCount }}
+                </p>
+                <p class="metric-hint">{{ stats.exportsCount > 0 ? 'Export more →' : 'Ready to export' }}</p>
+              </div>
             </div>
           </div>
-          <div class="step">
-            <div class="step-number">2</div>
-            <div class="step-content">
-              <h4>Configure Processing</h4>
-              <p>Set chunk size, overlap, and processing parameters</p>
+        </section>
+
+        <!-- FEATURE CARDS - With color accents -->
+        <section class="col-span-12">
+          <div class="grid grid-cols-12 gap-4">
+            <article class="col-span-12 md:col-span-6 feature-card group">
+              <div class="feature-icon bg-gradient-to-br from-emerald-100 to-emerald-200">
+                <i class="fas fa-brain text-emerald-600"></i>
+              </div>
+              <div>
+                <h3 class="text-gray-900 font-bold mb-2">AI-Optimized Chunking</h3>
+                <p class="text-gray-600 text-sm">Intelligent segmentation for vector databases & LLM training</p>
+                <div class="mt-3 flex gap-2">
+                  <span class="badge-sm bg-emerald-100 text-emerald-700">GPT-4 Ready</span>
+                  <span class="badge-sm bg-sky-100 text-sky-700">Claude Compatible</span>
+                </div>
+              </div>
+            </article>
+            
+            <article class="col-span-12 md:col-span-6 feature-card group">
+              <div class="feature-icon bg-gradient-to-br from-purple-100 to-purple-200">
+                <i class="fas fa-chart-line text-purple-600"></i>
+              </div>
+              <div>
+                <h3 class="text-gray-900 font-bold mb-2">Quality Analysis</h3>
+                <p class="text-gray-600 text-sm">Real-time readability and semantic coherence scoring</p>
+                <div class="mt-3 flex gap-2">
+                  <span class="badge-sm bg-purple-100 text-purple-700">WCAG AA</span>
+                  <span class="badge-sm bg-pink-100 text-pink-700">98% Accuracy</span>
+                </div>
+              </div>
+            </article>
+          </div>
+        </section>
+
+        <!-- GETTING STARTED - Visual Steps with Icons -->
+        <section class="col-span-12 rounded-2xl bg-gradient-to-br from-gray-50 to-white ring-1 ring-gray-100 shadow-xl overflow-hidden">
+          <div class="p-8">
+            <h3 class="text-2xl font-black bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent mb-8">
+              Get Started in 3 Steps
+            </h3>
+            
+            <div class="grid gap-6 md:grid-cols-3">
+              <!-- Step 1 -->
+              <div class="step-card group">
+                <div class="step-number bg-gradient-to-br from-emerald-500 to-emerald-600">
+                  <span class="text-white font-bold">1</span>
+                </div>
+                <div class="step-icon mb-4">
+                  <svg class="w-full h-full text-emerald-500" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="20" y="30" width="60" height="50" rx="4" stroke="currentColor" stroke-width="2"/>
+                    <path d="M30 45h40M30 55h40M30 65h25" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    <circle cx="50" cy="25" r="5" fill="currentColor"/>
+                  </svg>
+                </div>
+                <h4 class="font-bold text-gray-900 mb-2">Choose Your Method</h4>
+                <p class="text-sm text-gray-600 mb-3">Upload PDFs or create content manually</p>
+                <button class="text-sm font-medium text-emerald-600 hover:text-emerald-700">
+                  Start here →
+                </button>
+              </div>
+
+              <!-- Step 2 -->
+              <div class="step-card group">
+                <div class="step-number bg-gradient-to-br from-sky-500 to-sky-600">
+                  <span class="text-white font-bold">2</span>
+                </div>
+                <div class="step-icon mb-4">
+                  <svg class="w-full h-full text-sky-500" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="50" cy="50" r="25" stroke="currentColor" stroke-width="2"/>
+                    <path d="M50 35v15l10 10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    <circle cx="30" cy="20" r="3" fill="currentColor"/>
+                    <circle cx="70" cy="20" r="3" fill="currentColor"/>
+                    <circle cx="70" cy="80" r="3" fill="currentColor"/>
+                    <circle cx="30" cy="80" r="3" fill="currentColor"/>
+                  </svg>
+                </div>
+                <h4 class="font-bold text-gray-900 mb-2">Configure Processing</h4>
+                <p class="text-sm text-gray-600 mb-3">Set chunk size and overlap parameters</p>
+                <button class="text-sm font-medium text-sky-600 hover:text-sky-700">
+                  Configure →
+                </button>
+              </div>
+
+              <!-- Step 3 -->
+              <div class="step-card group">
+                <div class="step-number bg-gradient-to-br from-purple-500 to-purple-600">
+                  <span class="text-white font-bold">3</span>
+                </div>
+                <div class="step-icon mb-4">
+                  <svg class="w-full h-full text-purple-500" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M50 20v40M35 45l15 15 15-15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <rect x="30" y="70" width="40" height="10" rx="2" stroke="currentColor" stroke-width="2"/>
+                  </svg>
+                </div>
+                <h4 class="font-bold text-gray-900 mb-2">Export & Integrate</h4>
+                <p class="text-sm text-gray-600 mb-3">Download in your preferred AI format</p>
+                <button class="text-sm font-medium text-purple-600 hover:text-purple-700">
+                  Export now →
+                </button>
+              </div>
+            </div>
+            
+            <div class="mt-8 flex flex-col sm:flex-row gap-3 justify-center">
+              <button @click="navigateTo('manual-builder')" class="btn btn-primary">
+                <i class="fas fa-rocket mr-2"></i>
+                Launch Builder
+              </button>
+              <button @click="showTutorial" class="btn btn-ghost">
+                <i class="fas fa-play-circle mr-2"></i>
+                Watch Demo
+              </button>
             </div>
           </div>
-          <div class="step">
-            <div class="step-number">3</div>
-            <div class="step-content">
-              <h4>Export & Integrate</h4>
-              <p>Export to your preferred AI platform format</p>
-            </div>
-          </div>
-        </div>
-        
-        <div class="start-actions">
-          <button @click="navigateTo('manual-builder')" class="btn-primary">
-            <i class="fas fa-play"></i>
-            Start Building
-          </button>
-          <button @click="showTutorial" class="btn-secondary">
-            <i class="fas fa-video"></i>
-            Watch Tutorial
-          </button>
-        </div>
+        </section>
       </div>
     </section>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { useAppStore } from '@/stores/app'
 import { useChunksStore } from '@/stores/chunks'
 import { useVersionStore } from '@/stores/versions'
-import FeatureCard from '@/components/ui/FeatureCard.vue'
-import StatsCard from '@/components/ui/StatsCard.vue'
-import HelpTooltip from '@/components/ui/HelpTooltip.vue'
 
 const appStore = useAppStore()
 const chunksStore = useChunksStore()
 const versionStore = useVersionStore()
 
-// Stats with proper fallbacks for empty states
+// Stats with animations
 const stats = computed(() => ({
   documentsProcessed: Number(chunksStore.processedDocuments) || 0,
   totalChunks: Array.isArray(chunksStore.chunks) ? chunksStore.chunks.length : 0,
@@ -325,702 +386,349 @@ const navigateTo = (route: string) => {
 }
 
 const showTutorial = () => {
-  // Placeholder for tutorial functionality
   console.log('Tutorial feature coming soon')
 }
+
+// Add entrance animations and parallax
+onMounted(() => {
+  // Animate metrics on mount
+  const metrics = document.querySelectorAll('.metric-value')
+  metrics.forEach((metric, index) => {
+    setTimeout(() => {
+      metric.classList.add('animate-fade-in')
+    }, index * 100)
+  })
+  
+  // Parallax effect for hero wave background
+  const heroBackground = document.querySelector('.hero-wave-background') as HTMLElement
+  if (heroBackground && window.innerWidth >= 1024) {
+    window.addEventListener('scroll', () => {
+      const scrollY = window.scrollY
+      const parallaxSpeed = 0.2
+      const maxOffset = 50 // Limit parallax to prevent over-scrolling
+      const offset = Math.min(scrollY * parallaxSpeed, maxOffset)
+      heroBackground.style.transform = `translateY(${offset}px)`
+    }, { passive: true })
+  }
+})
 </script>
 
 <style scoped>
 .home-page {
   min-height: 100vh;
-  background: linear-gradient(180deg, #FFFFFF 0%, #F9FAFB 100%);
-  padding: 0;
-  margin: 0;
-}
-
-/* Hero Section */
-.hero-section {
-  padding: 3rem 2rem;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 4rem;
-  max-width: 1400px;
-  margin: 0 auto;
-  align-items: center;
-}
-
-@media (max-width: 1024px) {
-  .hero-section {
-    grid-template-columns: 1fr;
-    text-align: center;
-  }
-}
-
-.hero-content {
-  animation: fadeInUp 0.6s ease;
-}
-
-.welcome-header {
-  padding: 56px 48px 48px 48px;
-  background: linear-gradient(135deg, var(--brand-sage, #A8B79D) 0%, var(--brand-sage-light, #F5F7F4) 35%, #FFFFFF 75%, rgba(255, 255, 255, 0.98) 100%);
-  border-radius: 24px;
-  margin-bottom: 48px;
-  border: 1px solid rgba(168, 183, 157, 0.2);
-  box-shadow: 
-    0 16px 48px rgba(168, 183, 157, 0.15),
-    0 4px 16px rgba(0, 0, 0, 0.05),
-    inset 0 1px 0 rgba(255, 255, 255, 0.2);
-  position: relative;
-  overflow: hidden;
-}
-
-.welcome-header::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 4px;
-  background: linear-gradient(90deg, var(--brand-sage, #A8B79D) 0%, var(--bg-cta-primary, #E6B800) 50%, var(--brand-sage, #A8B79D) 100%);
-}
-
-.hero-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.5rem 1rem;
-  background: rgba(168, 183, 157, 0.1);
-  border: 1px solid #A8B79D;
-  border-radius: 24px;
-  font-size: 0.875rem;
-  color: #8CA085;
-  font-weight: 600;
-  margin-bottom: 1.5rem;
-}
-
-.hero-badge i {
-  font-size: 1rem;
-}
-
-.hero-title {
-  font-size: 4rem;
-  font-weight: 900;
-  color: #0F172A;
-  margin: 0 0 24px 0;
-  line-height: 1.05;
-  letter-spacing: -0.025em;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.brand-highlight {
-  background: linear-gradient(135deg, #A8B79D 0%, #8CA085 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
-.hero-subtitle {
-  font-size: 1.4rem;
-  color: #374151;
-  margin: 0 0 3rem 0;
-  line-height: 1.5;
-  font-weight: 500;
-  max-width: 600px;
-}
-
-/* Hero CTA Section */
-.hero-cta-section {
-  display: flex;
-  align-items: center;
-  gap: 20px;
-  margin-bottom: 3rem;
-  flex-wrap: wrap;
-}
-
-.hero-primary-cta {
-  position: relative;
-  background: linear-gradient(135deg, var(--bg-cta-primary, #E6B800) 0%, #D4AF37 100%);
-  color: var(--text-cta-primary, #FFFFFF);
-  border: none;
-  padding: 20px 32px;
-  border-radius: 16px;
-  font-size: 18px;
-  font-weight: 700;
-  cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 
-    0 8px 32px rgba(230, 184, 0, 0.4),
-    0 2px 8px rgba(0, 0, 0, 0.1);
-  overflow: hidden;
-  min-width: 280px;
-}
-
-.hero-primary-cta:hover {
-  transform: translateY(-3px);
-  box-shadow: 
-    0 12px 40px rgba(230, 184, 0, 0.5),
-    0 4px 16px rgba(0, 0, 0, 0.15);
-}
-
-.hero-primary-cta:hover .cta-glow {
-  opacity: 1;
-  transform: scale(1.2);
-}
-
-.cta-content {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 4px;
-  position: relative;
-  z-index: 2;
-}
-
-.cta-content i {
-  font-size: 20px;
-  margin-bottom: 4px;
-}
-
-.cta-text {
-  font-size: 18px;
-  font-weight: 700;
-  line-height: 1.2;
-}
-
-.cta-subtitle {
-  font-size: 13px;
-  opacity: 0.9;
-  font-weight: 500;
-  line-height: 1.2;
-}
-
-.cta-glow {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 100%;
-  height: 100%;
-  background: radial-gradient(circle, rgba(255, 255, 255, 0.3) 0%, transparent 70%);
-  transform: translate(-50%, -50%) scale(0.8);
-  opacity: 0;
-  transition: all 0.3s ease;
-  border-radius: 16px;
-  pointer-events: none;
-}
-
-.hero-secondary-cta {
-  background: rgba(255, 255, 255, 0.9);
-  color: var(--text-primary, #1F2937);
-  border: 2px solid rgba(168, 183, 157, 0.3);
-  padding: 16px 24px;
-  border-radius: 12px;
-  font-size: 16px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  backdrop-filter: blur(10px);
-}
-
-.hero-secondary-cta:hover {
-  background: rgba(255, 255, 255, 1);
-  border-color: var(--brand-sage, #A8B79D);
-  transform: translateY(-1px);
-  box-shadow: 0 4px 16px rgba(168, 183, 157, 0.2);
-}
-
-/* Quick Actions */
-.quick-actions {
-  display: flex;
-  gap: 1rem;
-  flex-wrap: wrap;
-}
-
-.action-card {
-  flex: 1;
-  min-width: 250px;
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  padding: 1.5rem;
-  background: white;
-  border: 1px solid #E5E7EB;
-  border-radius: 12px;
-  cursor: pointer;
-  transition: all 0.3s;
-  text-align: left;
-}
-
-.action-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
-}
-
-.action-card.primary {
-  background: linear-gradient(135deg, #A8B79D 0%, #8CA085 100%);
-  border: none;
-  color: white;
-}
-
-.action-icon {
-  width: 48px;
-  height: 48px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: rgba(255, 255, 255, 0.2);
-  border-radius: 12px;
-  flex-shrink: 0;
-}
-
-.action-card:not(.primary) .action-icon {
-  background: rgba(168, 183, 157, 0.1);
-}
-
-.action-icon i {
-  font-size: 20px;
-  color: currentColor;
-}
-
-.action-card:not(.primary) .action-icon i {
-  color: #8CA085;
-}
-
-.action-content h3 {
-  font-size: 1.125rem;
-  font-weight: 600;
-  margin: 0 0 0.25rem 0;
-}
-
-.action-content p {
-  font-size: 0.875rem;
-  margin: 0;
-  opacity: 0.9;
-}
-
-.action-card:not(.primary) .action-content p {
-  color: #6B7280;
-}
-
-.action-arrow {
-  margin-left: auto;
-  font-size: 14px;
-  opacity: 0.6;
-}
-
-/* Contextual Help Panel */
-.contextual-help-panel {
-  background: linear-gradient(135deg, #FFFFFF 0%, var(--brand-sage-light, #F5F7F4) 100%);
-  border-radius: 20px;
-  padding: 24px;
-  border: 1px solid rgba(168, 183, 157, 0.2);
-  box-shadow: 
-    0 8px 24px rgba(168, 183, 157, 0.12),
-    0 2px 8px rgba(0, 0, 0, 0.05);
-  animation: fadeIn 1s ease 0.3s both;
-  height: fit-content;
-  position: sticky;
-  top: 24px;
-}
-
-@media (max-width: 1024px) {
-  .contextual-help-panel {
-    display: none;
-  }
-}
-
-.help-panel-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 20px;
-}
-
-.help-panel-title {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 1.125rem;
-  font-weight: 700;
-  color: #0F172A;
-  margin: 0;
-}
-
-.help-panel-title i {
-  color: var(--bg-cta-primary, #E6B800);
-}
-
-.help-panel-badge {
-  background: rgba(168, 183, 157, 0.1);
-  color: var(--brand-sage-dark, #8CA085);
-  padding: 4px 8px;
-  border-radius: 8px;
-  font-size: 10px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-
-.help-tips-list {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  margin-bottom: 20px;
-}
-
-.help-tip {
-  display: flex;
-  align-items: flex-start;
-  gap: 12px;
-  padding: 12px;
-  background: rgba(255, 255, 255, 0.6);
-  border-radius: 12px;
-  border: 1px solid rgba(168, 183, 157, 0.1);
-  transition: all 0.2s ease;
-}
-
-.help-tip:hover {
-  background: rgba(255, 255, 255, 0.9);
-  border-color: rgba(168, 183, 157, 0.2);
-  transform: translateY(-1px);
-}
-
-.tip-icon {
-  width: 28px;
-  height: 28px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: rgba(168, 183, 157, 0.1);
-  border-radius: 8px;
-  color: var(--brand-sage-dark, #8CA085);
-  flex-shrink: 0;
-}
-
-.tip-icon i {
-  font-size: 14px;
-}
-
-.tip-content h4 {
-  font-size: 0.875rem;
-  font-weight: 600;
-  color: #0F172A;
-  margin: 0 0 4px 0;
-  line-height: 1.3;
-}
-
-.tip-content p {
-  font-size: 0.8125rem;
-  color: #4B5563;
-  margin: 0;
-  line-height: 1.4;
-}
-
-.help-panel-footer {
-  padding-top: 16px;
-  border-top: 1px solid rgba(168, 183, 157, 0.1);
-}
-
-.help-action-btn {
-  width: 100%;
-  background: linear-gradient(135deg, var(--brand-sage, #A8B79D) 0%, var(--brand-sage-dark, #8CA085) 100%);
-  color: white;
-  border: none;
-  padding: 12px 16px;
-  border-radius: 10px;
-  font-size: 0.875rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-}
-
-.help-action-btn:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(168, 183, 157, 0.3);
-}
-
-/* Stats Section */
-.stats-section {
-  padding: 48px 24px;
-  max-width: 1400px;
-  margin: 0 auto;
-}
-
-.stats-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 24px;
-  align-items: stretch;
-}
-
-
-/* Features Section */
-.features-section {
-  padding: 48px 24px;
-  max-width: 1400px;
-  margin: 0 auto;
-}
-
-.section-title {
-  font-size: 2.25rem;
-  font-weight: 800;
-  color: #1F2937;
-  text-align: center;
-  margin: 0 0 48px 0;
-  letter-spacing: -0.02em;
-  line-height: 1.2;
-}
-
-.features-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-  gap: 24px;
-  align-items: stretch;
-}
-
-.feature-card {
-  padding: 2.5rem;
-  background: linear-gradient(135deg, rgba(247, 248, 249, 0.8) 0%, rgba(241, 245, 249, 0.6) 100%);
-  border-radius: 20px;
-  border: 1px solid rgba(168, 183, 157, 0.1);
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  position: relative;
-  opacity: 0.85;
-}
-
-.feature-card--primary {
-  background: linear-gradient(135deg, #FFFFFF 0%, var(--brand-sage-light, #F5F7F4) 100%);
-  border: 1px solid rgba(168, 183, 157, 0.2);
-  box-shadow: 
-    0 8px 24px rgba(168, 183, 157, 0.12),
-    0 2px 8px rgba(0, 0, 0, 0.05);
-  opacity: 1;
-  transform: scale(1.02);
-}
-
-.feature-card:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
-  opacity: 1;
-}
-
-.feature-card--primary:hover {
-  transform: translateY(-6px) scale(1.02);
-  box-shadow: 0 16px 40px rgba(168, 183, 157, 0.20);
-  border-color: var(--brand-sage, #A8B79D);
-}
-
-.feature-priority-badge {
-  position: absolute;
-  top: 20px;
-  right: 20px;
-  background: linear-gradient(135deg, var(--bg-cta-primary, #E6B800) 0%, #D4AF37 100%);
-  color: white;
-  padding: 4px 12px;
-  border-radius: 12px;
-  font-size: 11px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  box-shadow: 0 2px 8px rgba(230, 184, 0, 0.3);
-}
-
-.feature-icon {
-  width: 64px;
-  height: 64px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 16px;
-  margin-bottom: 1.5rem;
-  box-shadow: 0 4px 16px rgba(168, 183, 157, 0.2);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-}
-
-.feature-icon.sage {
-  background: linear-gradient(135deg, var(--brand-sage, #A8B79D) 0%, var(--brand-sage-dark, #8CA085) 100%);
-  color: white;
-}
-
-.feature-icon.gold {
-  background: linear-gradient(135deg, var(--bg-cta-primary, #E6B800) 0%, var(--bg-cta-primary-hover, #CC9F00) 100%);
-  color: white;
-}
-
-.feature-icon i {
-  font-size: 28px;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.feature-title-section {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-bottom: 0.75rem;
-}
-
-.feature-card h3 {
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: #0F172A;
-  margin: 0;
-  letter-spacing: -0.01em;
-  line-height: 1.3;
-}
-
-.feature-card p {
-  font-size: 1rem;
-  color: #374151;
-  margin: 0;
-  line-height: 1.7;
-  font-weight: 400;
-  margin-top: 12px;
-}
-
-/* Getting Started */
-.getting-started {
-  padding: 48px 24px;
-  max-width: 900px;
-  margin: 0 auto;
-}
-
-.start-card {
-  background: white;
-  border-radius: 20px;
-  padding: 3rem;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
-}
-
-.start-card h2 {
-  font-size: 2.25rem;
-  font-weight: 800;
-  color: #0F172A;
-  margin: 0 0 2.5rem 0;
-  text-align: center;
-  line-height: 1.2;
-  letter-spacing: -0.01em;
-}
-
-.steps {
-  display: flex;
-  gap: 24px;
-  margin-bottom: 48px;
-}
-
-@media (max-width: 768px) {
-  .steps {
-    flex-direction: column;
-  }
-}
-
-.step {
-  flex: 1;
-  display: flex;
-  gap: 1rem;
-}
-
-.step-number {
-  width: 32px;
-  height: 32px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: linear-gradient(135deg, #A8B79D 0%, #8CA085 100%);
-  color: white;
-  border-radius: 50%;
-  font-weight: 600;
-  flex-shrink: 0;
-}
-
-.step-content h4 {
-  font-size: 1.125rem;
-  font-weight: 700;
-  color: #0F172A;
-  margin: 0 0 0.5rem 0;
-  line-height: 1.3;
-}
-
-.step-content p {
-  font-size: 1rem;
-  color: #4B5563;
-  margin: 0;
-  line-height: 1.6;
-}
-
-.start-actions {
-  display: flex;
-  gap: 24px;
-  justify-content: center;
-  flex-wrap: wrap;
-}
-
-.btn-primary,
-.btn-secondary {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.875rem 1.75rem;
-  border-radius: 10px;
-  font-size: 1rem;
-  font-weight: 600;
-  border: none;
-  cursor: pointer;
-  transition: all 0.3s;
-}
-
-.btn-primary {
-  background: var(--bg-cta-primary, #E6B800);
-  color: var(--text-cta-primary, #FFFFFF);
-  box-shadow: 0 4px 16px rgba(230, 184, 0, 0.3);
-  border: none;
-}
-
-.btn-primary:hover {
-  background: var(--bg-cta-primary-hover, #CC9F00);
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(230, 184, 0, 0.4);
-}
-
-.btn-secondary {
-  background: white;
-  color: #6B7280;
-  border: 1px solid #E5E7EB;
-}
-
-.btn-secondary:hover {
-  background: #F9FAFB;
-  border-color: #D1D5DB;
+  background: linear-gradient(135deg, #FAFAFA 0%, #F3F4F6 100%);
 }
 
 /* Animations */
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
+@keyframes gradient {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+@keyframes float {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(-20px, -30px) scale(1.1); }
+}
+
+@keyframes float-delayed {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(20px, -20px) scale(1.05); }
+}
+
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes count {
+  from { transform: scale(0.8); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+@keyframes subtle-zoom {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+
+@keyframes parallax {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(-20px); }
+}
+
+@keyframes subtle-parallax {
+  0%, 100% { 
+    transform: translateY(0) scale(1);
   }
-  to {
-    opacity: 1;
-    transform: translateY(0);
+  50% { 
+    transform: translateY(-10px) scale(1.02);
   }
 }
 
-@keyframes fadeIn {
-  from {
-    opacity: 0;
+.animate-gradient {
+  background-size: 200% 200%;
+  animation: gradient 3s ease infinite;
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+.animate-float-delayed {
+  animation: float-delayed 8s ease-in-out infinite;
+}
+
+.animate-fade-in {
+  animation: fade-in 0.6s ease-out;
+}
+
+.animate-count {
+  animation: count 0.5s ease-out;
+}
+
+.animate-spin-slow {
+  animation: spin 3s linear infinite;
+}
+
+.animate-subtle-zoom {
+  animation: subtle-zoom 20s ease-in-out infinite;
+}
+
+/* Hero Container & Background */
+.hero-container {
+  min-height: 500px;
+  background: white;
+  position: relative;
+  border: 1px solid rgba(0, 0, 0, 0.05); /* Subtle border to separate from background */
+}
+
+/* Ensure border radius is visible */
+.hero-container,
+.hero-wave-background {
+  border-radius: 1rem; /* 16px - matches rounded-2xl */
+}
+
+/* Gold Wave Background */
+.hero-wave-background {
+  position: absolute;
+  inset: 0;
+  background-image: url('/hero-background.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  will-change: transform;
+  animation: fade-in 1s ease-out, subtle-parallax 30s ease-in-out infinite;
+  animation-delay: 0s, 1s; /* Start parallax after fade-in */
+}
+
+/* White Overlay for Readability */
+.hero-wave-background::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(0.5px);
+}
+
+/* Additional gradient overlay for depth */
+.hero-wave-background::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, 
+    rgba(255, 255, 255, 0.3) 0%,
+    rgba(255, 255, 255, 0.5) 50%,
+    rgba(251, 191, 36, 0.05) 100%); /* Subtle gold tint */
+}
+
+/* Mobile optimization for hero background */
+@media (max-width: 768px) {
+  .hero-container {
+    min-height: 600px;
   }
-  to {
-    opacity: 1;
+  
+  .hero-wave-background {
+    background-position: center bottom; /* Shift to avoid text clash */
+    background-size: 120% auto; /* Ensure waves are visible */
   }
 }
 
+/* Tablet optimization */
+@media (min-width: 769px) and (max-width: 1023px) {
+  .hero-wave-background {
+    background-position: center center;
+    background-size: cover;
+  }
+}
+
+/* Parallax effect on scroll */
+@media (min-width: 1024px) {
+  .hero-background {
+    transform: translateY(var(--parallax-offset, 0));
+    transition: transform 0.3s ease-out;
+  }
+}
+
+/* High-contrast Hero Buttons */
+.btn-hero-primary {
+  @apply inline-flex items-center justify-center rounded-xl px-6 py-3.5 text-base font-bold transition-all duration-200;
+  background: linear-gradient(135deg, #047857 0%, #065F46 100%);
+  color: white;
+  box-shadow: 0 4px 14px rgba(4, 120, 87, 0.4);
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-hero-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(4, 120, 87, 0.5);
+}
+
+.btn-hero-primary:active {
+  transform: scale(0.98);
+}
+
+.btn-hero-secondary {
+  @apply inline-flex items-center justify-center rounded-xl px-5 py-3.5 text-base font-semibold transition-all duration-200;
+  background: white;
+  color: #065F46;
+  border: 2px solid #065F46;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.btn-hero-secondary:hover {
+  background: #065F46;
+  color: white;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(6, 95, 70, 0.3);
+}
+
+/* Tip Cards */
+.tip-card {
+  @apply flex gap-3 p-3 rounded-xl hover:bg-white/80 transition-all cursor-pointer;
+}
+
+.tip-card:hover {
+  transform: translateX(4px);
+}
+
+.tip-icon {
+  @apply w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0;
+}
+
+/* Metric Cards */
+.metric-card {
+  @apply relative rounded-2xl bg-white ring-1 ring-gray-100 shadow-lg p-6 cursor-pointer transition-all overflow-hidden;
+}
+
+.metric-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+.metric-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, transparent 0%, rgba(16, 185, 129, 0.05) 100%);
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.metric-card:hover::before {
+  opacity: 1;
+}
+
+.metric-header {
+  @apply flex items-center gap-4 mb-4;
+}
+
+.metric-icon {
+  @apply w-12 h-12 rounded-xl flex items-center justify-center text-xl shadow-lg;
+}
+
+.metric-progress {
+  @apply w-10 h-10;
+}
+
+.metric-content {
+  @apply relative z-10;
+}
+
+.metric-label {
+  @apply text-xs font-medium text-gray-500 uppercase tracking-wider;
+}
+
+.metric-value {
+  @apply text-3xl font-black text-gray-900 mt-1;
+}
+
+.metric-hint {
+  @apply text-xs text-gray-500 mt-2;
+}
+
+/* Feature Cards */
+.feature-card {
+  @apply rounded-2xl bg-white ring-1 ring-gray-100 shadow-lg p-6 flex gap-4 items-start transition-all;
+}
+
+.feature-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+.feature-icon {
+  @apply w-14 h-14 rounded-xl flex items-center justify-center text-2xl flex-shrink-0;
+}
+
+/* Step Cards */
+.step-card {
+  @apply relative bg-white rounded-xl p-6 text-center transition-all border-2 border-gray-100;
+}
+
+.step-card:hover {
+  transform: translateY(-4px);
+  border-color: transparent;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+.step-number {
+  @apply absolute -top-3 -left-3 w-10 h-10 rounded-full flex items-center justify-center shadow-lg;
+}
+
+.step-icon {
+  @apply w-20 h-20 mx-auto;
+}
+
+/* Badges */
+.badge-sm {
+  @apply inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium;
+}
+
+/* Icons */
+.fas::before { font-style: normal; }
+.fa-rocket::before { content: '🚀'; }
+.fa-check-circle::before { content: '✅'; }
+.fa-cog::before { content: '⚙'; }
+.fa-play::before { content: '▶'; }
+.fa-upload::before { content: '⬆'; }
+.fa-lightbulb::before { content: '💡'; }
+.fa-link::before { content: '🔗'; }
+.fa-magic::before { content: '✨'; }
+.fa-sparkles::before { content: '✨'; }
+.fa-file-alt::before { content: '📄'; }
+.fa-cube::before { content: '📦'; }
+.fa-code-branch::before { content: '🌿'; }
+.fa-download::before { content: '⬇'; }
+.fa-brain::before { content: '🧠'; }
+.fa-chart-line::before { content: '📈'; }
+.fa-play-circle::before { content: '▶️'; }
+
+/* Button overrides for vibrant design */
+.btn:hover {
+  transform: translateY(-2px);
+}
+
+.btn:active {
+  transform: scale(0.98);
+}
 </style>

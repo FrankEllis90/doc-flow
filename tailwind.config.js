@@ -111,7 +111,40 @@ module.exports = {
           900: '#0F172A',  // Near black (15:1 contrast)
           950: '#0A0F1C'   // Darkest neutral
         },
-        // RAGARA BRAND color mappings - SAGE GREEN SYSTEM
+        // VIBRANT BRAND COLORS - Breaking Monotony
+        'brand-ink': '#0D3B2E',      // Bold accent for headings/links
+        'brand-emerald': '#10B981',  // Vibrant green for primary CTAs
+        'brand-ocean': '#0EA5E9',    // Bright blue accent for engagement
+        'brand-purple': '#8B5CF6',   // Purple accent for special features
+        'brand-coral': '#F97316',    // Orange accent for warnings/alerts
+        'brand-sage': {
+          DEFAULT: '#A8B79D',  // Main sage green brand color
+          50: '#F5F7F4',       // Light sage backgrounds
+          100: '#E8EDE5',      // Card backgrounds, hover states  
+          200: '#D4DDD0',      // Borders, disabled states
+          300: '#B8C7B0',      // Secondary elements
+          400: '#A8B79D',      // Interactive elements - MAIN BRAND COLOR
+          500: '#A8B79D',      // Primary brand color
+          600: '#6F8B73',      // Primary actions - updated for better contrast
+          700: '#5F7963',      // Primary pressed - updated for better contrast
+          800: '#5A7354',      // High contrast text
+          900: '#415D3C',      // Maximum contrast
+        },
+        'brand-gold': {
+          DEFAULT: '#D4AF37',  // Original accent gold
+          50: '#FFFDF5',       // Lightest gold backgrounds
+          100: '#FEF9E6',      // Light gold highlights
+          200: '#FDF2C7',      // Medium-light gold borders
+          300: '#D4AF37',      // GOLD ACCENT COLOR - Main brand accent
+          400: '#F9D84A',      // Medium-dark gold hover states
+          500: '#E6B800',      // Enhanced gold - primary CTAs - BOLD CTA COLOR
+          600: '#D4A317',      // Enhanced primary gold - better contrast
+          700: '#B88D12',      // Enhanced dark gold - CTA hover
+          800: '#996F0A',      // Very dark gold contrast
+          900: '#7A5500',      // Darkest gold maximum contrast
+        },
+        
+        // RAGARA BRAND color mappings - SAGE GREEN SYSTEM (Legacy support)
         'peppercorn-living-green': '#A8B79D',  // Main sage green brand color
         'peppercorn-deep-green': '#5A7354',    // Dark sage green
         'peppercorn-lilac': '#F5F7F4',         // Light sage background

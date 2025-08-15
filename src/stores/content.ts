@@ -451,7 +451,7 @@ export const useContentStore = defineStore('content', () => {
           console.warn('Autosave failed, data saved to localStorage fallback')
         } catch (fallbackError) {
           console.error('Critical: Both IndexedDB and localStorage autosave failed:', fallbackError)
-          addError('Autosave failed - your changes may not be saved automatically')
+          addError({ message: 'Autosave failed - your changes may not be saved automatically', severity: 'medium' })
         }
       }
     } finally {

@@ -1,0 +1,200 @@
+---
+title: Doc Layer - AI Knowledge Base Builder Architecture
+---
+
+graph TB
+    subgraph "🌐 Entry Points"
+        A[App.vue] --> B[HomeView.vue]
+        A --> C[Settings.vue]
+        D[index.html] --> A
+    end
+    
+    subgraph "📋 Core Navigation & Layout"
+        B --> E[AppLayout.vue]
+        E --> F[TabNavigation.vue]
+        E --> G[VerticalSidebar.vue]
+        E --> H[AppHeader.vue]
+        E --> I[AppFooter.vue]
+        F --> J[TabContent.vue]
+    end
+    
+    subgraph "🧙‍♂️ Manual Content Wizard"
+        J --> K[ManualContentWizard.vue]
+        K --> L1[SourceStep.vue]
+        K --> L2[ConfigureStep.vue]
+        K --> L3[ProcessStep.vue]
+        K --> L4[ReviewStep.vue]
+        K --> L5[ExportStep.vue]
+        K --> L6[InsightsStep.vue]
+        
+        L1 --> M1[ContentInputForm.vue]
+        L2 --> M2[ChunkingOptionsPanel.vue]
+        L3 --> M3[ProcessingStatusOverlay.vue]
+        L4 --> M4[ProcessedContentsList.vue]
+        L5 --> M5[VectorStoreExporter.vue]
+        L6 --> M6[DetailedVectorAnalysis.vue]
+    end
+    
+    subgraph "📄 Document Processing"
+        N[DocumentProcessor.vue] --> O[DocumentProcessorWizard.vue]
+        O --> P1[FileProcessingErrorBoundary.vue]
+        N --> P2[BulkOperations.vue]
+        N --> P3[QualityAnalyzer.vue]
+    end
+    
+    subgraph "🏪 Pinia State Stores"
+        S1[📊 app.ts<br/>Global UI State]
+        S2[📝 content.ts<br/>Manual Content]
+        S3[🗂️ chunks.ts<br/>Processed Chunks]
+        S4[⚙️ processing.ts<br/>Processing Queue]
+        S5[📦 export.ts<br/>Export Functions]
+        S6[🗄️ versions.ts<br/>Version Control]
+        S7[🏷️ categories.ts<br/>Content Categories]
+        S8[💾 persistence.ts<br/>Data Persistence]
+        S9[🎯 onboarding.ts<br/>User Onboarding]
+    end
+    
+    subgraph "🔧 Core Utilities"
+        U1[📄 chunker.js<br/>Text Chunking]
+        U2[📖 pdfParser.js<br/>PDF Processing]
+        U3[📝 markdownParser.js<br/>Markdown Processing]
+        U4[📊 enhancedVectorAnalyzer.js<br/>Vector Analysis]
+        U5[🧠 semanticChunker.js<br/>AI-Powered Chunking]
+        U6[🔗 tokenBasedChunker.js<br/>Token-Based Splitting]
+        U7[📋 multiFormatParser.js<br/>Multi-Format Support]
+        U8[🎯 vectorStoreProfiles.js<br/>Platform Configs]
+    end
+    
+    subgraph "🎣 Vue Composables"
+        C1[⚠️ useErrorHandler.ts<br/>Error Management]
+        C2[🔔 useNotifications.ts<br/>Toast Messages]
+        C3[⚡ usePerformanceOptimization.ts<br/>Performance Utils]
+        C4[📜 useVirtualScroll.ts<br/>Virtual Scrolling]
+        C5[⌨️ useKeyboardShortcuts.ts<br/>Keyboard Navigation]
+        C6[✅ useFileValidator.ts<br/>File Validation]
+        C7[⏱️ useTimeoutManager.ts<br/>Async Timeouts]
+        C8[🔍 useDocumentAnalyzer.ts<br/>Document Analysis]
+    end
+    
+    subgraph "🎨 UI Component Library"
+        UI1[🎛️ LoadingButton.vue]
+        UI2[📊 ProgressBar.vue]
+        UI3[💀 SkeletonLoader.vue]
+        UI4[🔍 SearchFilter.vue]
+        UI5[📋 BaseModal.vue]
+        UI6[🃏 BaseCard.vue]
+        UI7[📝 FormField.vue]
+        UI8[🔽 DropdownSelect.vue]
+        UI9[🎚️ ToggleSwitch.vue]
+        UI10[📱 VirtualScroll.vue]
+        UI11[🚨 Toast.vue]
+        UI12[ℹ️ HelpTooltip.vue]
+    end
+    
+    subgraph "🔄 Data Flow Patterns"
+        DF1[User Input] --> DF2[Validation]
+        DF2 --> DF3[Store Update]
+        DF3 --> DF4[Processing]
+        DF4 --> DF5[Storage]
+        DF5 --> DF6[UI Update]
+        
+        DF7[File Upload] --> DF8[Parser Selection]
+        DF8 --> DF9[Content Extraction]
+        DF9 --> DF10[Chunking Algorithm]
+        DF10 --> DF11[Quality Analysis]
+        DF11 --> DF12[Export Generation]
+    end
+    
+    subgraph "💾 Storage Layer"
+        ST1[IndexedDB<br/>Primary Storage]
+        ST2[LocalStorage<br/>Fallback Storage]
+        ST3[SessionStorage<br/>Temporary Data]
+        ST4[Memory Cache<br/>Performance Layer]
+    end
+    
+    subgraph "🚀 Export Formats"
+        EX1[🔷 Azure OpenAI]
+        EX2[🧠 OpenAI API]
+        EX3[🤖 Anthropic Claude]
+        EX4[🌲 Pinecone]
+        EX5[🎨 ChromaDB]
+        EX6[🔍 Elasticsearch]
+        EX7[📄 JSON/CSV/XML]
+        EX8[📝 Markdown]
+    end
+    
+    %% Core Connections
+    K -.->|state management| S1
+    K -.->|state management| S2
+    K -.->|state management| S3
+    
+    L3 -.->|processing| U1
+    L3 -.->|processing| U2
+    L3 -.->|processing| U3
+    
+    M4 -.->|chunks data| S3
+    M5 -.->|export functions| S5
+    M6 -.->|analysis| U4
+    
+    N -.->|file parsing| U2
+    N -.->|file parsing| U3
+    N -.->|file parsing| U7
+    
+    %% Store Dependencies
+    S1 -.->|persistence| ST1
+    S2 -.->|persistence| ST1
+    S3 -.->|persistence| ST1
+    S6 -.->|version control| ST1
+    
+    %% Composable Usage
+    K -.->|error handling| C1
+    K -.->|notifications| C2
+    K -.->|shortcuts| C5
+    
+    N -.->|file validation| C6
+    N -.->|error handling| C1
+    
+    UI10 -.->|virtual scrolling| C4
+    M4 -.->|performance| C3
+    
+    %% Export Connections
+    M5 -.->|generates| EX1
+    M5 -.->|generates| EX2
+    M5 -.->|generates| EX3
+    M5 -.->|generates| EX4
+    M5 -.->|generates| EX5
+    M5 -.->|generates| EX6
+    M5 -.->|generates| EX7
+    M5 -.->|generates| EX8
+    
+    %% Utility Connections
+    U1 -.->|chunk analysis| U4
+    U5 -.->|AI chunking| U1
+    U6 -.->|token chunking| U1
+    U8 -.->|platform configs| M5
+    
+    %% UI Component Usage
+    K --> UI1
+    K --> UI2
+    K --> UI3
+    L4 --> UI4
+    K --> UI5
+    M4 --> UI10
+    
+    classDef primary fill:#A8B79D,stroke:#8CA085,stroke-width:2px,color:#fff
+    classDef secondary fill:#D4AF37,stroke:#B8941F,stroke-width:2px,color:#fff
+    classDef store fill:#E3F2FD,stroke:#1976D2,stroke-width:2px
+    classDef utility fill:#F3E5F5,stroke:#7B1FA2,stroke-width:2px
+    classDef composable fill:#E8F5E8,stroke:#388E3C,stroke-width:2px
+    classDef ui fill:#FFF3E0,stroke:#F57C00,stroke-width:2px
+    classDef storage fill:#FCE4EC,stroke:#C2185B,stroke-width:2px
+    classDef export fill:#E0F2F1,stroke:#00695C,stroke-width:2px
+    
+    class K,L1,L2,L3,L4,L5,L6 primary
+    class M1,M2,M3,M4,M5,M6 secondary
+    class S1,S2,S3,S4,S5,S6,S7,S8,S9 store
+    class U1,U2,U3,U4,U5,U6,U7,U8 utility
+    class C1,C2,C3,C4,C5,C6,C7,C8 composable
+    class UI1,UI2,UI3,UI4,UI5,UI6,UI7,UI8,UI9,UI10,UI11,UI12 ui
+    class ST1,ST2,ST3,ST4 storage
+    class EX1,EX2,EX3,EX4,EX5,EX6,EX7,EX8 export

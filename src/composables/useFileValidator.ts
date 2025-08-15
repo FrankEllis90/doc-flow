@@ -332,8 +332,8 @@ export const useFileValidator = () => {
     }, { component: 'FileValidator', action: 'validateFileContent' })
     
     // handleAsyncError wraps the result in a data property, extract it
-    const finalResult = result?.data || result || { isValid: false, error: 'Content validation failed' }
-    return finalResult
+    const finalResult = result?.data || { isValid: false, error: 'Content validation failed' }
+    return finalResult as FileValidationResult
   }
   
   /**

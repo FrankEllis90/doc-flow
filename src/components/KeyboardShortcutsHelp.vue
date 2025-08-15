@@ -85,12 +85,12 @@ defineEmits<{
 const groupedShortcuts = computed(() => {
   const groups: Record<string, ShortcutDefinition[]> = {}
   
-  Object.entries(props.shortcuts).forEach(([key, shortcut]) => {
-    const category = shortcut.category || 'General'
+  Object.entries(props.shortcuts).forEach(([key, shortcut]: [string, any]) => {
+    const category = (shortcut as any).category || 'General'
     if (!groups[category]) {
       groups[category] = []
     }
-    groups[category].push({ ...shortcut, key })
+    groups[category].push({ ...(shortcut as any), key })
   })
   
   // Sort categories by importance

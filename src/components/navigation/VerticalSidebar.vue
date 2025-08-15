@@ -184,14 +184,14 @@ const toggleSection = (sectionId: string) => {
 <style scoped>
 /* Enterprise Design System Variables */
 :root {
-  --sidebar-width-expanded: 280px;
-  --sidebar-width-collapsed: 64px;
+  --sidebar-width-expanded: 320px;
+  --sidebar-width-collapsed: 72px;
   --brand-sage: #A8B79D;
   --brand-sage-dark: #8CA085;
   --brand-sage-light: #F5F7F4;
   --brand-gold: #D4AF37;
   --text-primary: #1F2937;
-  --text-secondary: #6B7280;
+  --text-secondary: #52525B;
   --text-tertiary: #9CA3AF;
   --border-color: #E5E7EB;
   --surface-primary: #FFFFFF;
