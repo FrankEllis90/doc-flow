@@ -73,7 +73,8 @@
       "Bash(git init:*)",
       "Bash(PORT=3015 timeout 5s npm run dev)",
       "Bash(PORT=3005 timeout 5s npm run dev)",
-      "Bash(PORT=3005 timeout 15s npm run dev)"
+      "Bash(PORT=3005 timeout 15s npm run dev)",
+      "Bash(git pull:*)"
     ],
     "deny": [],
     "defaultMode": "acceptEdits"
